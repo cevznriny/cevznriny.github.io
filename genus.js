@@ -75,6 +75,8 @@ function clear_filters() {
     for (const f of ['','la','en','da']) {
         document.getElementById(`filter ${f}`).value = '';
     }
+    const results = document.getElementById('results');
+    results.innerHTML = '';    
 }
 
 async function filter_figures(lang = '') {
