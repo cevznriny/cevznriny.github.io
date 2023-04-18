@@ -38,10 +38,10 @@
     </style>
 
     <body id='body'>
-    <input id="filter " onchange="filter_figures()" placeholder="Filter">
-<input id="filter la" onchange="filter_figures('la')" placeholder="Latin">
-<input id="filter en" onchange="filter_figures('en')" placeholder="English">
-<input id="filter da" onchange="filter_figures('da')" placeholder="Danish">
+    <form onsubmit="return false;"><input id="filter " onchange="filter_figures()" placeholder="Filter"></form>
+<form onsubmit="return false;"><input id="filter la" onchange="filter_figures('la')" placeholder="Latin"></form>
+<form onsubmit="return false;"><input id="filter en" onchange="filter_figures('en')" placeholder="English"></form>
+<form onsubmit="return false;"><input id="filter da" onchange="filter_figures('da')" placeholder="Danish"></form>
 <button onclick="clear_filters()">X</button>
 <section id='results'></section>
 <hr>

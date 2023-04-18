@@ -1,4 +1,4 @@
-async function filter_figures()  {
+async function filter_figures1()  {
     const results  = document.getElementById('results');
     results.innerHTML = '';
     const input = document.getElementById('filter').value;
