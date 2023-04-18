@@ -71,23 +71,35 @@ if ('IntersectionObserver' in window) {
     init();
 }
 
-async function filter_figures() {
+function clear_filters() { 
+    for (const f of ['','la','en','da']) {
+        document.getElementById(`filter ${f}`).value = '';
+    }
+}
+
+async function filter_figures(lang = '') {
     const results = document.getElementById('results');
     results.innerHTML = '';
-    const input = document.getElementById('filter').value;
-    console.log(input);
+    const input = document.getElementById(`filter ${lang}`).value;
+    //console.log(input);
     if (input == '') {
         return;
     }
     const re = new RegExp(input, 'i');
+
+    if (lang) {
+        lang = [lang];
+    } else {
+        lang = ['la', 'en', 'da'];
+    }
 
     for (const order in data) {
         for (const family in data[order]) {
             for (const genus in data[order][family]) {
                 for (const species in data[order][family][genus]) {
                     const record = data[order][family][genus][species];
-                    for (const lang of ['la', 'en', 'da']) {
-                        let str = record[lang];
+                    for (const l of lang) {
+                        let str = record[l];
                         if (!str) {
                             str = '';
                         }

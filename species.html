@@ -38,7 +38,11 @@
     </style>
 
     <body id='body'>
-    <input id="filter" onchange="filter_figures()">
+    <input id="filter " onchange="filter_figures()" placeholder="Filter">
+<input id="filter la" onchange="filter_figures('la')" placeholder="Latin">
+<input id="filter en" onchange="filter_figures('en')" placeholder="English">
+<input id="filter da" onchange="filter_figures('da')" placeholder="Danish">
+<button onclick="clear_filters()">X</button>
 <section id='results'></section>
 <hr>
 <a href='#body' style='position: fixed; right: 0; bottom: 0; margin: 10px'>Top</a>
