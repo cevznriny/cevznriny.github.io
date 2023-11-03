@@ -1,0 +1,558 @@
+Euring	Sortering	Artnavn	Latin	English	Status	Type
+2250	10	Amerikansk Skarveand	Oxyura jamaicensis	Ruddy Duck	CU	art
+2260	15	Hvidhovedet Skarveand	Oxyura leucocephala	White-headed Duck	AU	art
+1525	20	Sortsvane	Cygnus atratus	Black Swan	C	art
+1526	25	Sorthalset Svane	Cygnus melancoryphus	Black-necked Swan	E	art
+1520	30	Knopsvane	Cygnus olor	Mute Swan	A	art
+1530	40	Pibesvane	Cygnus columbianus	Tundra Swan	A	art
+1540	50	Sangsvane	Cygnus cygnus	Whooper Swan	A	art
+1680	100	Knortegås	Branta bernicla	Brant Goose	A	art
+1670	150	Bramgås	Branta leucopsis	Barnacle Goose	A	art
+1690	180	Rødhalset Gås	Branta ruficollis	Red-breasted Goose	AS	art
+1665	210	Dværgcanadagås	Branta hutchinsii	Cackling Goose	E	art
+1660	220	Canadagås	Branta canadensis	Canada Goose	C	art
+1630	250	Snegås	Anser caerulescens	Snow Goose	D	art
+1640	270	Dværgsnegås	Anser rossii	Ross's Goose	AU	art
+1650	275	Kejsergås	Anser canagicus	Emperor Goose	E	art
+1620	280	Indisk Gås	Anser indicus	Bar-headed Goose	C	art
+1580	310	Kortnæbbet Gås	Anser brachyrhynchus	Pink-footed Goose	A	art
+1610	320	Grågås	Anser anser	Greylag Goose	A	art
+1560	345	Svanegås	Anser cygnoides	Swan Goose	E	art
+1571	360	Tajgasædgås	Anser fabalis	Taiga Bean Goose	A	art
+1574	370	Tundrasædgås	Anser serrirostris	Tundra Bean Goose	A	art
+1590	390	Blisgås	Anser albifrons	Greater White-fronted Goose	A	art
+1600	420	Dværggås	Anser erythropus	Lesser White-fronted Goose	AS	art
+2120	440	Havlit	Clangula hyemalis	Long-tailed Duck	A	art
+2070	450	Kongeederfugl	Somateria spectabilis	King Eider	AS	art
+2060	470	Ederfugl	Somateria mollissima	Common Eider	A	art
+2090	490	Stellersand	Polysticta stelleri	Steller's Eider	AU	art
+2140	500	Brilleand	Melanitta perspicillata	Surf Scoter	AS	art
+2150	510	Fløjlsand	Melanitta fusca	Velvet Scoter	A	art
+2152	520	Asiatisk Fløjlsand	Melanitta stejnegeri	Stejneger's Scoter	AU	art
+2153	530	Amerikansk Fløjlsand	Melanitta deglandi	White-winged Scoter	AU	art
+2130	540	Sortand	Melanitta nigra	Common Scoter	A	art
+2132	550	Amerikansk Sortand	Melanitta americana	Black Scoter	AS	art
+2160	560	Bøffeland	Bucephala albeola	Bufflehead	DU	art
+2180	570	Hvinand	Bucephala clangula	Common Goldeneye	A	art
+2200	590	Lille Skallesluger	Mergellus albellus	Smew	A	art
+2190	600	Hjelmskallesluger	Lophodytes cucullatus	Hooded Merganser	DU	art
+2230	610	Stor Skallesluger	Mergus merganser	Common Merganser	A	art
+2210	620	Toppet Skallesluger	Mergus serrator	Red-breasted Merganser	A	art
+1700	670	Nilgås	Alopochen aegyptiaca	Egyptian Goose	C	art
+1695	680	Magellangås	Chloephaga picta	Upland Goose	E	art
+1730	700	Gravand	Tadorna tadorna	Common Shelduck	A	art
+1710	710	Rustand	Tadorna ferruginea	Ruddy Shelduck	A	art
+1750	730	Moskusand	Cairina moschata	Muscovy Duck	E	art
+1950	740	Marmorand	Marmaronetta angustirostris	Marbled Duck	EU	art
+1960	750	Rødhovedet And	Netta rufina	Red-crested Pochard	AS	art
+1980	770	Taffeland	Aythya ferina	Common Pochard	A	art
+2020	790	Hvidøjet And	Aythya nyroca	Ferruginous Duck	AS	art
+2000	810	Halsbåndstroldand	Aythya collaris	Ring-necked Duck	AU	art
+2030	830	Troldand	Aythya fuligula	Tufted Duck	A	art
+2040	860	Bjergand	Aythya marila	Greater Scaup	A	art
+2050	870	Lille Bjergand	Aythya affinis	Lesser Scaup	AU	art
+1910	910	Atlingand	Spatula querquedula	Garganey	A	art
+1940	920	Skeand	Spatula clypeata	Northern Shoveler	A	art
+1920	970	Blåvinget And	Spatula discors	Blue-winged Teal	AU	art
+1930	980	Kaneland	Spatula cyanoptera	Cinnamon Teal	E	art
+1830	990	Sibirisk Krikand	Sibirionetta formosa	Baikal Teal	AU	art
+1810	1000	Segland	Mareca falcata	Falcated Duck	E	art
+1820	1010	Knarand	Mareca strepera	Gadwall	A	art
+1790	1020	Pibeand	Mareca penelope	Eurasian Wigeon	A	art
+25800	1035	Chilepibeand	Mareca sibilatrix	Chiloe Wigeon	E	art
+1800	1060	Amerikansk Pibeand	Mareca americana	American Wigeon	AU	art
+1860	1080	Gråand	Anas platyrhynchos	Mallard	A	art
+1890	1120	Spidsand	Anas acuta	Northern Pintail	A	art
+1840	1140	Krikand	Anas crecca	Eurasian Teal	A	art
+1845	1170	Amerikansk Krikand	Anas carolinensis	Green-winged Teal	AS	art
+1780	1180	Mandarinand	Aix galericulata	Mandarin Duck	C	art
+1770	1190	Brudeand	Aix sponsa	Wood Duck	E	art
+3700	1200	Vagtel	Coturnix coturnix	Common Quail	A	art
+3550	1220	Chukarhøne	Alectoris chukar	Chukar Partridge	E	art
+3580	1230	Rødhøne	Alectoris rufa	Red-legged Partridge	E	art
+3930	1240	Kongefasan	Syrmaticus reevesii	Reeves's Pheasant	E	art
+3960	1250	Guldfasan	Chrysolophus pictus	Golden Pheasant	E	art
+3940	1260	Fasan	Phasianus colchicus	Common Pheasant	C	art
+35670	1270	Påfugl	Pavo cristatus	Indian Peafowl	E	art
+3350	1280	Tjur	Tetrao urogallus	Western Capercaillie	E	art
+3320	1290	Urfugl	Lyrurus tetrix	Black Grouse	AU	art
+3670	1300	Agerhøne	Perdix perdix	Grey Partridge	A	art
+1472	1310	Stor Flamingo	Phoenicopterus roseus	Greater Flamingo	DU	art
+1471	1320	Cariberflamingo	Phoenicopterus ruber	American Flamingo	E	art
+1475	1340	Chileflamingo	Phoenicopterus chilensis	Chilean Flamingo	E	art
+1480	1350	Lille Flamingo	Phoeniconaias minor	Lesser Flamingo	E	art
+70	1370	Lille Lappedykker	Tachybaptus ruficollis	Little Grebe	A	art
+100	1380	Gråstrubet Lappedykker	Podiceps grisegena	Red-necked Grebe	A	art
+90	1390	Toppet Lappedykker	Podiceps cristatus	Great Crested Grebe	A	art
+110	1410	Nordisk Lappedykker	Podiceps auritus	Horned Grebe	A	art
+120	1430	Sorthalset Lappedykker	Podiceps nigricollis	Black-necked Grebe	A	art
+6650	1450	Klippedue (tamdue)	Columba livia	Rock Dove	C	art
+6680	1460	Huldue	Columba oenas	Stock Dove	A	art
+6700	1470	Ringdue	Columba palumbus	Common Wood Pigeon	A	art
+6870	1480	Turteldue	Streptopelia turtur	European Turtle Dove	AS	art
+6890	1490	Østlig Turteldue	Streptopelia orientalis	Oriental Turtle Dove	AU	art
+6840	1500	Tyrkerdue	Streptopelia decaocto	Eurasian Collared Dove	A	art
+6950	1510	Sørgedue	Zenaida macroura	Mourning Dove	AU	art
+6630	1530	Steppehøne	Syrrhaptes paradoxus	Pallas's Sandgrouse	AU	art
+7790	1540	Rødhalset Natravn	Caprimulgus ruficollis	Red-necked Nightjar	U	art
+7780	1550	Natravn	Caprimulgus europaeus	European Nightjar	A	art
+7810	1560	Ørkennatravn	Caprimulgus aegyptius	Egyptian Nightjar	AU	art
+7920	1570	Tornhalesejler	Hirundapus caudacutus	White-throated Needletail	AU	art
+7980	1580	Alpesejler	Tachymarptis melba	Alpine Swift	AU	art
+7970	1590	Orientsejler	Apus pacificus	Pacific Swift	AU	art
+7990	1592	Kaffersejler	Apus caffer	White-rumped Swift	AU	art
+8000	1595	Lille Sejler	Apus affinis	Little Swift	AU	art
+7960	1600	Gråsejler	Apus pallidus	Pallid Swift	AU	art
+7950	1610	Mursejler	Apus apus	Common Swift	A	art
+7160	1630	Skadegøg	Clamator glandarius	Great Spotted Cuckoo	AU	art
+7270	1640	Sortnæbbet Gøg	Coccyzus erythropthalmus	Black-billed Cuckoo	AU	art
+7280	1650	Gulnæbbet Gøg	Coccyzus americanus	Yellow-billed Cuckoo	BU	art
+7240	1660	Gøg	Cuculus canorus	Common Cuckoo	A	art
+4070	1670	Vandrikse	Rallus aquaticus	Water Rail	A	art
+4210	1680	Engsnarre	Crex crex	Corn Crake	A	art
+4080	1690	Plettet Rørvagtel	Porzana porzana	Spotted Crake	AS	art
+4100	1700	Lille Rørvagtel	Zapornia parva	Little Crake	AU	art
+4110	1710	Dværgrørvagtel	Zapornia pusilla	Baillon's Crake	AU	art
+4270	1730	Sultanhøne	Porphyrio porphyrio	Western Swamphen	E	art
+4250	1740	Lille Sultanhøne	Porphyrio alleni	Allen's Gallinule	BU	art
+4240	1750	Rørhøne (Grønbenet)	Gallinula chloropus	Common Moorhen	A	art
+4290	1760	Blishøne	Fulica atra	Eurasian Coot	A	art
+4360	1770	Prærietrane	Antigone canadensis	Sandhill Crane	AU	art
+4410	1780	Jomfrutrane	Grus virgo	Demoiselle Crane	AU	art
+4330	1790	Trane	Grus grus	Common Crane	A	art
+4420	1820	Dværgtrappe	Tetrax tetrax	Little Bustard	AU	art
+4460	1830	Stortrappe	Otis tarda	Great Bustard	AU	art
+4445	1840	Østlig Kravetrappe	Chlamydotis macqueenii	Macqueen's Bustard	BU	art
+20	1850	Rødstrubet Lom	Gavia stellata	Red-throated Loon	A	art
+30	1870	Sortstrubet Lom	Gavia arctica	Black-throated Loon	A	art
+33	1875	Stillehavslom	Gavia pacifica	Pacific Loon	AU	art
+40	1880	Islom	Gavia immer	Common Loon	AS	art
+50	1900	Hvidnæbbet Lom	Gavia adamsii	Yellow-billed Loon	AS	art
+500	1915	Wilsons Stormsvale	Oceanites oceanicus	Wilson's Storm Petrel	AU	art
+140	1920	Sortbrynet Albatros	Thalassarche melanophris	Black-browed Albatross	AU	art
+520	1940	Lille Stormsvale	Hydrobates pelagicus	European Storm Petrel	AS	art
+550	1950	Stor Stormsvale	Hydrobates leucorhous	Leach's Storm Petrel	AS	art
+220	1970	Mallemuk	Fulmarus glacialis	Northern Fulmar	A	art
+430	1990	Sodfarvet Skråpe	Ardenna grisea	Sooty Shearwater	AS	art
+400	2000	Storskråpe	Ardenna gravis	Great Shearwater	AU	art
+361	2005	Scopolis Skråpe	Calonectris diomedea	Scopoli's Shearwater	AU	art
+362	2010	Atlantisk Skråpe	Calonectris borealis	Cory's Shearwater	AU	art
+460	2040	Almindelig Skråpe	Puffinus puffinus	Manx Shearwater	AS	art
+465	2060	Ægæerskråpe	Puffinus yelkouan	Yelkouan Shearwater	U	art
+455	2070	Balearskråpe	Puffinus mauretanicus	Balearic Shearwater	AU	art
+490	2075	Tropeskråpe	Puffinus lherminieri	Audubon's Shearwater	AU	art
+480	2080	Lille Skråpe	Puffinus baroli	Barolo Shearwater	U	art
+1310	2100	Sort Stork	Ciconia nigra	Black Stork	AS	art
+1340	2110	Hvid Stork	Ciconia ciconia	White Stork	A	art
+880	2130	Hvid Pelikan	Pelecanus onocrotalus	Great White Pelican	DU	art
+900	2140	Rosapelikan	Pelecanus rufescens	Pink-backed Pelican	E	art
+890	2150	Krøltoppet Pelikan	Pelecanus crispus	Dalmatian Pelican	AU	art
+950	2170	Rørdrum	Botaurus stellaris	Eurasian Bittern	A	art
+960	2180	Amerikansk Rørdrum	Botaurus lentiginosus	American Bittern	AU	art
+980	2190	Dværghejre	Ixobrychus minutus	Little Bittern	AU	art
+1040	2200	Nathejre	Nycticorax nycticorax	Black-crowned Night Heron	AU	art
+1080	2210	Tophejre	Ardeola ralloides	Squacco Heron	AU	art
+1110	2220	Kohejre	Bubulcus ibis	Western Cattle Egret	AU	art
+1220	2230	Fiskehejre	Ardea cinerea	Grey Heron	A	art
+1240	2240	Purpurhejre	Ardea purpurea	Purple Heron	AU	art
+1210	2250	Sølvhejre	Ardea alba	Great Egret	A	art
+1190	2260	Silkehejre	Egretta garzetta	Little Egret	AS	art
+1420	2290	Hellig Ibis	Threskiornis aethiopicus	African Sacred Ibis	EU	art
+1440	2300	Skestork	Platalea leucorodia	Eurasian Spoonbill	A	art
+34130	2305	Afrikansk Skestork	Platalea alba	African Spoonbill	E	art
+1360	2310	Sort Ibis	Plegadis falcinellus	Glossy Ibis	AS	art
+930	2320	Pragtfregatfugl	Fregata magnificens	Magnificent Frigatebird	AU	art
+710	2330	Sule	Morus bassanus	Northern Gannet	A	art
+700	2335	Brun Sule	Sula leucogaster	Brown Booby	AU	art
+800	2340	Topskarv	Gulosus aristotelis	European Shag	AS	art
+720	2350	Skarv	Phalacrocorax carbo	Great Cormorant	A	art
+2270	2390	Kalkungrib	Cathartes aura	Turkey Vulture	E	art
+4590	2400	Triel	Burhinus oedicnemus	Eurasian Stone-curlew	AU	art
+4500	2410	Strandskade	Haematopus ostralegus	Eurasian Oystercatcher	A	art
+4560	2420	Klyde	Recurvirostra avosetta	Pied Avocet	A	art
+4550	2430	Stylteløber	Himantopus himantopus	Black-winged Stilt	AS	art
+4860	2440	Strandhjejle	Pluvialis squatarola	Grey Plover	A	art
+4850	2450	Hjejle	Pluvialis apricaria	European Golden Plover	A	art
+4845	2480	Sibirisk Hjejle	Pluvialis fulva	Pacific Golden Plover	AU	art
+4840	2490	Amerikansk Hjejle	Pluvialis dominica	American Golden Plover	AU	art
+4820	2510	Pomeransfugl	Charadrius morinellus	Eurasian Dotterel	AS	art
+4700	2520	Stor Præstekrave	Charadrius hiaticula	Common Ringed Plover	A	art
+4690	2550	Lille Præstekrave	Charadrius dubius	Little Ringed Plover	A	art
+4770	2560	Hvidbrystet Præstekrave	Charadrius alexandrinus	Kentish Plover	AS	art
+4786	2565	Sibirisk Præstekrave	Charadrius mongolus	Siberian Sand Plover	AU	art
+4780	2570	Tibetansk Præstekrave	Charadrius atrifrons	Tibetan Sand Plover	AU	art
+4790	2580	Ørkenpræstekrave	Charadrius leschenaultii	Greater Sand Plover	AU	art
+4800	2585	Kaspisk Præstekrave	Charadrius asiaticus	Caspian Plover	U	art
+4930	2590	Vibe	Vanellus vanellus	Northern Lapwing	A	art
+4870	2600	Sporevibe	Vanellus spinosus	Spur-winged Lapwing	EU	art
+4910	2610	Steppevibe	Vanellus gregarius	Sociable Lapwing	AU	art
+4920	2620	Sumpvibe	Vanellus leucurus	White-tailed Lapwing	AU	art
+5440	2640	Bartramsklire	Bartramia longicauda	Upland Sandpiper	AU	art
+5380	2650	Småspove	Numenius phaeopus	Eurasian Whimbrel	A	art
+5410	2660	Storspove	Numenius arquata	Eurasian Curlew	A	art
+5340	2680	Lille Kobbersneppe	Limosa lapponica	Bar-tailed Godwit	A	art
+5330	2690	Canadisk Kobbersneppe	Limosa haemastica	Hudsonian Godwit	AU	art
+5320	2700	Stor Kobbersneppe	Limosa limosa	Black-tailed Godwit	A	art
+5610	2730	Stenvender	Arenaria interpres	Ruddy Turnstone	A	art
+4960	2740	Islandsk Ryle	Calidris canutus	Red Knot	A	art
+5170	2780	Brushane	Calidris pugnax	Ruff	A	art
+5140	2790	Kærløber	Calidris falcinellus	Broad-billed Sandpiper	AS	art
+5080	2800	Spidshalet Ryle	Calidris acuminata	Sharp-tailed Sandpiper	AU	art
+5150	2810	Klireryle	Calidris himantopus	Stilt Sandpiper	AU	art
+5090	2820	Krumnæbbet Ryle	Calidris ferruginea	Curlew Sandpiper	A	art
+5100	2830	Sortgrå Ryle	Calidris maritima	Purple Sandpiper	A	art
+5020	2840	Temmincksryle	Calidris temminckii	Temminck's Stint	A	art
+5000	2850	Rødhalset Ryle	Calidris ruficollis	Red-necked Stint	AU	art
+4970	2860	Sandløber	Calidris alba	Sanderling	A	art
+5120	2870	Almindelig Ryle	Calidris alpina	Dunlin	A	art
+5060	2910	Bairdsryle	Calidris bairdii	Baird's Sandpiper	AU	art
+5010	2920	Dværgryle	Calidris minuta	Little Stint	A	art
+5050	2940	Hvidrygget Ryle	Calidris fuscicollis	White-rumped Sandpiper	AU	art
+5160	2950	Prærieløber	Calidris subruficollis	Buff-breasted Sandpiper	AU	art
+5070	2960	Stribet Ryle	Calidris melanotos	Pectoral Sandpiper	AS	art
+4980	2970	Tyknæbbet Dværgryle	Calidris pusilla	Semipalmated Sandpiper	AU	art
+5270	2990	Langnæbbet Sneppeklire	Limnodromus scolopaceus	Long-billed Dowitcher	AU	art
+5290	3010	Skovsneppe	Scolopax rusticola	Eurasian Woodcock	A	art
+5200	3020	Tredækker	Gallinago media	Great Snipe	AS	art
+5190	3030	Dobbeltbekkasin	Gallinago gallinago	Common Snipe	A	art
+5180	3040	Enkeltbekkasin	Lymnocryptes minimus	Jack Snipe	A	art
+5550	3050	Terekklire	Xenus cinereus	Terek Sandpiper	AU	art
+5560	3060	Mudderklire	Actitis hypoleucos	Common Sandpiper	A	art
+5570	3070	Plettet Mudderklire	Actitis macularius	Spotted Sandpiper	AU	art
+5530	3080	Svaleklire	Tringa ochropus	Green Sandpiper	A	art
+5510	3090	Lille Gulben	Tringa flavipes	Lesser Yellowlegs	AU	art
+5450	3100	Sortklire	Tringa erythropus	Spotted Redshank	A	art
+5480	3110	Hvidklire	Tringa nebularia	Common Greenshank	A	art
+5500	3120	Stor Gulben	Tringa melanoleuca	Greater Yellowlegs	AU	art
+5460	3130	Rødben	Tringa totanus	Common Redshank	A	art
+5540	3170	Tinksmed	Tringa glareola	Wood Sandpiper	A	art
+5470	3180	Damklire	Tringa stagnatilis	Marsh Sandpiper	AS	art
+5630	3190	Amerikansk Svømmesneppe	Phalaropus tricolor	Wilson's Phalarope	AU	art
+5640	3200	Odinshane	Phalaropus lobatus	Red-necked Phalarope	AS	art
+5650	3210	Thorshane	Phalaropus fulicarius	Red Phalarope	AS	art
+4640	3230	Ørkenløber	Cursorius cursor	Cream-colored Courser	AU	art
+4650	3240	Rødvinget Braksvale	Glareola pratincola	Collared Pratincole	AU	art
+4660	3250	Orientbraksvale	Glareola maldivarum	Oriental Pratincole	AU	art
+4670	3260	Sortvinget Braksvale	Glareola nordmanni	Black-winged Pratincole	AU	art
+6540	3300	Lunde	Fratercula arctica	Atlantic Puffin	AS	art
+6380	3310	Tejst	Cepphus grylle	Black Guillemot	A	art
+6360	3340	Alk	Alca torda	Razorbill	A	art
+6470	3370	Søkonge	Alle alle	Little Auk	AS	art
+6350	3380	Polarlomvie	Uria lomvia	Thick-billed Murre	AU	art
+6340	3390	Lomvie	Uria aalge	Common Murre	A	art
+5680	3450	Lille Kjove	Stercorarius longicaudus	Long-tailed Jaeger	AS	art
+5670	3460	Almindelig Kjove	Stercorarius parasiticus	Parasitic Jaeger	A	art
+5660	3480	Mellemkjove	Stercorarius pomarinus	Pomarine Jaeger	AS	art
+5690	3500	Storkjove	Stercorarius skua	Great Skua	A	art
+6020	3520	Ride	Rissa tridactyla	Black-legged Kittiwake	A	art
+6040	3530	Ismåge	Pagophila eburnea	Ivory Gull	AU	art
+5790	3540	Sabinemåge	Xema sabini	Sabine's Gull	AS	art
+5850	3550	Tyndnæbbet Måge	Chroicocephalus genei	Slender-billed Gull	AU	art
+5810	3560	Bonapartemåge	Chroicocephalus philadelphia	Bonaparte's Gull	AU	art
+5820	3570	Hættemåge	Chroicocephalus ridibundus	Black-headed Gull	A	art
+5780	3580	Dværgmåge	Hydrocoloeus minutus	Little Gull	A	art
+6010	3590	Rosenmåge	Rhodostethia rosea	Ross's Gull	AU	art
+5760	3600	Lattermåge	Leucophaeus atricilla	Laughing Gull	AU	art
+5770	3610	Præriemåge	Leucophaeus pipixcan	Franklin's Gull	AU	art
+5750	3620	Sorthovedet Måge	Ichthyaetus melanocephalus	Mediterranean Gull	A	art
+5880	3640	Audouinsmåge	Ichthyaetus audouinii	Audouin's Gull	AU	art
+5730	3660	Stor Sorthovedet Måge	Ichthyaetus ichthyaetus	Pallas's Gull	AU	art
+5900	3670	Stormmåge	Larus canus	Common Gull	A	art
+5890	3695	Ringnæbbet Måge	Larus delawarensis	Ring-billed Gull	AU	art
+5910	3700	Sildemåge	Larus fuscus	Lesser Black-backed Gull	A	art
+5920	3750	Sølvmåge	Larus argentatus	European Herring Gull	A	art
+5919	3775	Armensk Måge	Larus armenicus	Armenian Gull	AU	art
+5915	3780	Middelhavssølvmåge	Larus michahellis	Yellow-legged Gull	AS	art
+5930	3790	Kaspisk Måge	Larus cachinnans	Caspian Gull	A	art
+5980	3840	Hvidvinget Måge	Larus glaucoides	Iceland Gull	AS	art
+5960	3880	Gråvinget Måge	Larus glaucescens	Glaucous-winged Gull	AU	art
+5990	3890	Gråmåge	Larus hyperboreus	Glaucous Gull	AS	art
+6000	3900	Svartbag	Larus marinus	Great Black-backed Gull	A	art
+6230	3920	Sodfarvet Terne	Onychoprion fuscatus	Sooty Tern	U	art
+6220	3930	Brilleterne	Onychoprion anaethetus	Bridled Tern	AU	art
+6240	3940	Dværgterne	Sternula albifrons	Little Tern	A	art
+6050	3950	Sandterne	Gelochelidon nilotica	Gull-billed Tern	AS	art
+6060	3960	Rovterne	Hydroprogne caspia	Caspian Tern	A	art
+6260	3970	Hvidskægget Terne	Chlidonias hybrida	Whiskered Tern	AU	art
+6280	3980	Hvidvinget Terne	Chlidonias leucopterus	White-winged Tern	AS	art
+6270	3990	Sortterne	Chlidonias niger	Black Tern	A	art
+6140	4010	Rosenterne	Sterna dougallii	Roseate Tern	AU	art
+6150	4020	Fjordterne	Sterna hirundo	Common Tern	A	art
+6160	4030	Havterne	Sterna paradisaea	Arctic Tern	A	art
+6120	4050	Aztekerterne	Thalasseus elegans	Elegant Tern	AU	art
+6110	4060	Splitterne	Thalasseus sandvicensis	Sandwich Tern	A	art
+3010	4080	Fiskeørn	Pandion haliaetus	Western Osprey	A	art
+2350	4090	Blå Glente	Elanus caeruleus	Black-winged Kite	AU	art
+2310	4100	Hvepsevåge	Pernis apivorus	European Honey Buzzard	A	art
+2460	4110	Lammegrib	Gypaetus barbatus	Bearded Vulture	EU	art
+2470	4120	Ådselgrib	Neophron percnopterus	Egyptian Vulture	AU	art
+2530	4130	Rüppells Grib	Gyps rueppelli	Rüppell's Vulture	E	art
+2510	4150	Gåsegrib	Gyps fulvus	Griffon Vulture	AU	art
+2550	4160	Munkegrib	Aegypius monachus	Cinereous Vulture	U	art
+2560	4175	Slangeørn	Circaetus gallicus	Short-toed Snake Eagle	AU	art
+2920	4180	Lille Skrigeørn	Clanga pomarina	Lesser Spotted Eagle	AS	art
+2930	4190	Stor Skrigeørn	Clanga clanga	Greater Spotted Eagle	AU	art
+2945	4210	Steppeørn	Aquila nipalensis	Steppe Eagle	AU	art
+2950	4220	Kejserørn	Aquila heliaca	Eastern Imperial Eagle	AU	art
+2960	4230	Kongeørn	Aquila chrysaetos	Golden Eagle	AS	art
+2990	4240	Høgeørn	Aquila fasciata	Bonelli's Eagle	AU	art
+2980	4260	Dværgørn	Hieraaetus pennatus	Booted Eagle	AU	art
+2600	4270	Rørhøg	Circus aeruginosus	Western Marsh Harrier	A	art
+2610	4280	Blå Kærhøg	Circus cyaneus	Hen Harrier	A	art
+2615	4285	Amerikansk Kærhøg	Circus hudsonius	Northern Harrier	U	art
+2620	4290	Steppehøg	Circus macrourus	Pallid Harrier	AS	art
+2630	4320	Hedehøg	Circus pygargus	Montagu's Harrier	A	art
+2690	4340	Spurvehøg	Accipiter nisus	Eurasian Sparrowhawk	A	art
+2670	4350	Duehøg	Accipiter gentilis	Northern Goshawk	A	art
+2430	4380	Havørn	Haliaeetus albicilla	White-tailed Eagle	A	art
+2440	4385	Hvidhovedet Havørn	Haliaeetus leucocephalus	Bald Eagle	U	art
+2450	4390	Beringshavørn	Haliaeetus pelagicus	Steller's Sea Eagle	EU	art
+2390	4400	Rød Glente	Milvus milvus	Red Kite	A	art
+2380	4410	Sort Glente	Milvus migrans	Black Kite	AS	art
+2382	4415	Gulnæbbet Glente	Milvus aegyptius	Yellow-billed Kite	DU	art
+2900	4440	Fjeldvåge	Buteo lagopus	Rough-legged Buzzard	A	art
+2870	4450	Musvåge	Buteo buteo	Common Buzzard	A	art
+2880	4470	Ørnevåge	Buteo rufinus	Long-legged Buzzard	AU	art
+7350	4490	Slørugle	Tyto alba	Western Barn Owl	A	art
+7500	4520	Høgeugle	Surnia ulula	Northern Hawk-Owl	AU	art
+7510	4530	Spurveugle	Glaucidium passerinum	Eurasian Pygmy Owl	AU	art
+7570	4540	Kirkeugle	Athene noctua	Little Owl	AS	art
+7700	4550	Perleugle	Aegolius funereus	Boreal Owl	AS	art
+7390	4560	Dværghornugle	Otus scops	Eurasian Scops Owl	AU	art
+7670	4570	Skovhornugle	Asio otus	Long-eared Owl	A	art
+7680	4580	Mosehornugle	Asio flammeus	Short-eared Owl	A	art
+7610	4600	Natugle	Strix aluco	Tawny Owl	A	art
+7490	4610	Sneugle	Bubo scandiacus	Snowy Owl	AU	art
+7440	4620	Stor Hornugle	Bubo bubo	Eurasian Eagle-Owl	C	art
+8460	4640	Hærfugl	Upupa epops	Eurasian Hoopoe	AS	art
+8480	4650	Vendehals	Jynx torquilla	Eurasian Wryneck	A	art
+8560	4670	Grønspætte	Picus viridis	European Green Woodpecker	A	art
+8630	4680	Sortspætte	Dryocopus martius	Black Woodpecker	A	art
+8500	4690	Guldspætte	Colaptes auratus	Northern Flicker	AU	art
+8870	4700	Lille Flagspætte	Dryobates minor	Lesser Spotted Woodpecker	A	art
+8830	4730	Mellemflagspætte	Dendrocoptes medius	Middle Spotted Woodpecker	AU	art
+8760	4740	Stor Flagspætte	Dendrocopos major	Great Spotted Woodpecker	A	art
+8980	4780	Tretået Spætte	Picoides tridactylus	Eurasian Three-toed Woodpecker	AU	art
+8390	4800	Grøn Biæder	Merops persicus	Blue-cheeked Bee-eater	AU	art
+8400	4810	Biæder	Merops apiaster	European Bee-eater	AS	art
+8410	4820	Ellekrage	Coracias garrulus	European Roller	AU	art
+8310	4830	Isfugl	Alcedo atthis	Common Kingfisher	A	art
+3030	4840	Lille Tårnfalk	Falco naumanni	Lesser Kestrel	AU	art
+3040	4850	Tårnfalk	Falco tinnunculus	Common Kestrel	A	art
+3050	4860	Amerikansk Tårnfalk	Falco sparverius	American Kestrel	BU	art
+3070	4870	Aftenfalk	Falco vespertinus	Red-footed Falcon	AS	art
+3110	4880	Eleonorafalk	Falco eleonorae	Eleonora's Falcon	AU	art
+3090	4890	Dværgfalk	Falco columbarius	Merlin	A	art
+3100	4900	Lærkefalk	Falco subbuteo	Eurasian Hobby	A	art
+3140	4920	Lannerfalk	Falco biarmicus	Lanner Falcon	DU	art
+3160	4930	Slagfalk	Falco cherrug	Saker Falcon	AU	art
+3180	4940	Jagtfalk	Falco rusticolus	Gyrfalcon	AU	art
+3200	4950	Vandrefalk	Falco peregrinus	Peregrine Falcon	A	art
+40010	4990	Nymfeparakit	Nymphicus hollandicus	Cockatiel	E	art
+40000	5000	Undulat	Melopsittacus undulatus	Budgerigar	E	art
+7135	5010	Stor Alexanderparakit	Psittacula eupatria	Alexandrine Parakeet	E	art
+7120	5020	Alexanderparakit	Psittacula krameri	Rose-ringed Parakeet	E	art
+7085	5030	Munkeparakit	Myiopsitta monachus	Monk Parakeet	E	art
+16330	5050	Rødøjet Vireo	Vireo olivaceus	Red-eyed Vireo	AU	art
+15080	5060	Pirol	Oriolus oriolus	Eurasian Golden Oriole	AS	art
+15130	5070	Brun Tornskade	Lanius cristatus	Brown Shrike	AU	art
+15150	5080	Rødrygget Tornskade	Lanius collurio	Red-backed Shrike	A	art
+15140	5090	Turkestantornskade	Lanius phoenicuroides	Red-tailed Shrike	AU	art
+15170	5100	Langhalet Tornskade	Lanius schach	Long-tailed Shrike	AU	art
+15190	5110	Rosenbrystet Tornskade	Lanius minor	Lesser Grey Shrike	AU	art
+15200	5120	Stor Tornskade	Lanius excubitor	Great Grey Shrike	A	art
+15230	5140	Rødhovedet Tornskade	Lanius senator	Woodchat Shrike	AU	art
+15470	5160	Iberisk Blåskade	Cyanopica cooki	Iberian Magpie	E	art
+15390	5170	Skovskade	Garrulus glandarius	Eurasian Jay	A	art
+15490	5180	Husskade	Pica pica	Eurasian Magpie	A	art
+15570	5190	Nøddekrige	Nucifraga caryocatactes	Spotted Nutcracker	AS	art
+15610	5220	Sibirisk Allike	Coloeus dauuricus	Daurian Jackdaw	AU	art
+15600	5230	Allike	Coloeus monedula	Western Jackdaw	A	art
+15630	5270	Råge	Corvus frugilegus	Rook	A	art
+15700	5275	Broget Krage	Corvus albus	Pied Crow	EU	art
+15720	5280	Ravn	Corvus corax	Northern Raven	A	art
+15671	5290	Sortkrage	Corvus corone	Carrion Crow	A	art
+15673	5300	Gråkrage	Corvus cornix	Hooded Crow	A	art
+14610	5350	Sortmejse	Periparus ater	Coal Tit	A	art
+14540	5360	Topmejse	Lophophanes cristatus	European Crested Tit	A	art
+14400	5370	Sumpmejse	Poecile palustris	Marsh Tit	A	art
+14420	5380	Fyrremejse	Poecile montanus	Willow Tit	A	art
+14620	5420	Blåmejse	Cyanistes caeruleus	Eurasian Blue Tit	A	art
+14640	5430	Musvit	Parus major	Great Tit	A	art
+14900	5450	Pungmejse	Remiz pendulinus	Eurasian Penduline Tit	AS	art
+9700	5460	Dværglærke	Alaudala rufescens	Lesser Short-toed Lark	U	art
+9620	5470	Østlig Kalanderlærke	Melanocorypha bimaculata	Bimaculated Lark	AU	art
+9680	5490	Korttået Lærke	Calandrella brachydactyla	Greater Short-toed Lark	AU	art
+9780	5500	Bjerglærke	Eremophila alpestris	Horned Lark	A	art
+9740	5510	Hedelærke	Lullula arborea	Woodlark	A	art
+9760	5520	Sanglærke	Alauda arvensis	Eurasian Skylark	A	art
+9720	5530	Toplærke	Galerida cristata	Crested Lark	AS	art
+13640	5550	Skægmejse	Panurus biarmicus	Bearded Reedling	A	art
+12260	5560	Cistussanger	Cisticola juncidis	Zitting Cisticola	AU	art
+12390	5570	Stor Græshoppesanger	Helopsaltes fasciolatus	Gray's Grasshopper Warbler	AU	art
+12350	5580	Stribet Græshoppesanger	Locustella lanceolata	Lanceolated Warbler	AU	art
+12380	5590	Savisanger	Locustella luscinioides	Savi's Warbler	AS	art
+12370	5600	Flodsanger	Locustella fluviatilis	River Warbler	AS	art
+12360	5610	Græshoppesanger	Locustella naevia	Common Grasshopper Warbler	A	art
+12560	5620	Lille Gulbug	Iduna caligata	Booted Warbler	AU	art
+12550	5630	Bleg Gulbug	Iduna pallida	Eastern Olivaceous Warbler	AU	art
+12600	5640	Spottesanger	Hippolais polyglotta	Melodious Warbler	AU	art
+12590	5650	Gulbug	Hippolais icterina	Icterine Warbler	A	art
+12420	5660	Vandsanger	Acrocephalus paludicola	Aquatic Warbler	AU	art
+12410	5670	Tamarisksanger	Acrocephalus melanopogon	Moustached Warbler	U	art
+12430	5680	Sivsanger	Acrocephalus schoenobaenus	Sedge Warbler	A	art
+12480	5690	Buskrørsanger	Acrocephalus dumetorum	Blyth's Reed Warbler	AS	art
+12500	5700	Kærsanger	Acrocephalus palustris	Marsh Warbler	A	art
+12510	5710	Rørsanger	Acrocephalus scirpaceus	Eurasian Reed Warbler	A	art
+12470	5720	Lille Rørsanger	Acrocephalus agricola	Paddyfield Warbler	AU	art
+12530	5730	Drosselrørsanger	Acrocephalus arundinaceus	Great Reed Warbler	AS	art
+10010	5740	Bysvale	Delichon urbicum	Common House Martin	A	art
+9950	5750	Rødrygget Svale	Cecropis daurica	Red-rumped Swallow	AS	art
+9920	5760	Landsvale	Hirundo rustica	Barn Swallow	A	art
+9910	5790	Klippesvale	Ptyonoprogne rupestris	Eurasian Crag Martin	AU	art
+9810	5800	Digesvale	Riparia riparia	Sand Martin	A	art
+13070	5820	Bjergløvsanger	Phylloscopus bonelli	Western Bonelli's Warbler	AU	art
+13080	5840	Skovsanger	Phylloscopus sibilatrix	Wood Warbler	A	art
+13000	5850	Hvidbrynet Løvsanger	Phylloscopus inornatus	Yellow-browed Warbler	AS	art
+13005	5860	Himalayasanger	Phylloscopus humei	Hume's Leaf Warbler	AU	art
+12980	5870	Fuglekongesanger	Phylloscopus proregulus	Pallas's Leaf Warbler	AS	art
+13030	5880	Brun Løvsanger	Phylloscopus fuscatus	Dusky Warbler	AS	art
+13050	5890	Sinkiangløvsanger	Phylloscopus griseolus	Sulphur-bellied warbler	AU	art
+13120	5900	Løvsanger	Phylloscopus trochilus	Willow Warbler	A	art
+13116	5940	Iberisk Gransanger	Phylloscopus ibericus	Iberian Chiffchaff	AU	art
+13110	5950	Gransanger	Phylloscopus collybita	Common Chiffchaff	A	art
+13010	5990	Schwarz´ Løvsanger	Phylloscopus schwarzi	Radde's Warbler	AU	art
+12930	6000	Lundsanger	Phylloscopus trochiloides	Greenish Warbler	AS	art
+12920	6005	Østlig Lundsanger	Phylloscopus plumbeitarsus	Two-barred Warbler	AU	art
+12950	6010	Nordsanger	Phylloscopus borealis	Arctic Warbler	AU	art
+12910	6020	Grøn Sanger	Phylloscopus nitidus	Green Warbler	AU	art
+14370	6040	Halemejse	Aegithalos caudatus	Long-tailed Tit	A	art
+12770	6080	Munk	Sylvia atricapilla	Eurasian Blackcap	A	art
+12760	6090	Havesanger	Sylvia borin	Garden Warbler	A	art
+12700	6100	Asiatisk Ørkensanger	Curruca nana	Asian Desert Warbler	AU	art
+12730	6110	Høgesanger	Curruca nisoria	Barred Warbler	AS	art
+12740	6120	Gærdesanger	Curruca curruca	Lesser Whitethroat	A	art
+12690	6150	Sortstrubet Sanger	Curruca ruppeli	Rüppell's Warbler	AU	art
+12656	6162	Iberisk Sanger	Curruca iberiae	Western Subalpine Warbler	AU	art
+12655	6163	Makisanger	Curruca subalpina	Moltoni's Warbler	AU	art
+12654	6165	Rødstrubet Sanger	Curruca cantillans	Eastern Subalpine Warbler	AU	art
+12670	6170	Sorthovedet Sanger	Curruca melanocephala	Sardinian Warbler	AU	art
+12750	6180	Tornsanger	Curruca communis	Common Whitethroat	A	art
+12610	6190	Sardinsk Sanger	Curruca sarda	Marmora's Warbler	AU	art
+13140	6200	Fuglekonge	Regulus regulus	Goldcrest	A	art
+13150	6210	Rødtoppet Fuglekonge	Regulus ignicapilla	Common Firecrest	A	art
+10480	6230	Silkehale	Bombycilla garrulus	Bohemian Waxwing	A	art
+14870	6240	Korttået Træløber	Certhia brachydactyla	Short-toed Treecreeper	A	art
+14860	6250	Træløber	Certhia familiaris	Eurasian Treecreeper	A	art
+14790	6290	Spætmejse	Sitta europaea	Eurasian Nuthatch	A	art
+10660	6320	Gærdesmutte	Troglodytes troglodytes	Eurasian Wren	A	art
+15820	6340	Stær	Sturnus vulgaris	Common Starling	A	art
+15830	6350	Ensfarvet Stær	Sturnus unicolor	Spotless Starling	AU	art
+15840	6360	Rosenstær	Pastor roseus	Rosy Starling	AS	art
+10500	6370	Vandstær	Cinclus cinclus	White-throated Dipper	A	art
+13350	6380	Grå Fluesnapper	Muscicapa striata	Spotted Flycatcher	A	art
+13340	6390	Brun Fluesnapper	Muscicapa dauurica	Asian Brown Flycatcher	AU	art
+10990	6400	Rødhals	Erithacus rubecula	European Robin	A	art
+11020	6410	Dværgnattergal	Larvivora sibilans	Rufous-tailed Robin	AU	art
+11030	6420	Nattergal	Luscinia luscinia	Thrush Nightingale	A	art
+11040	6430	Sydlig Nattergal	Luscinia megarhynchos	Common Nightingale	AS	art
+11060	6450	Blåhals	Luscinia svecica	Bluethroat	A	art
+11050	6480	Rubinnattergal	Calliope calliope	Siberian Rubythroat	AU	art
+11130	6490	Blåstjert	Tarsiger cyanurus	Red-flanked Bluetail	AU	art
+13430	6500	Lille Fluesnapper	Ficedula parva	Red-breasted Flycatcher	AS	art
+13432	6505	Tajgafluesnapper	Ficedula albicilla	Taiga Flycatcher	AU	art
+13490	6510	Broget Fluesnapper	Ficedula hypoleuca	European Pied Flycatcher	A	art
+13480	6520	Hvidhalset Fluesnapper	Ficedula albicollis	Collared Flycatcher	AS	art
+11220	6550	Rødstjert	Phoenicurus phoenicurus	Common Redstart	A	art
+11210	6560	Husrødstjert	Phoenicurus ochruros	Black Redstart	A	art
+11620	6580	Stendrossel	Monticola saxatilis	Common Rock Thrush	AU	art
+11370	6590	Bynkefugl	Saxicola rubetra	Whinchat	A	art
+11390	6600	Sortstrubet Bynkefugl	Saxicola rubicola	European Stonechat	A	art
+11399	6640	Sibirisk Bynkefugl	Saxicola maurus	Siberian Stonechat	AU	art
+11392	6665	Japansk Bynkefugl	Saxicola stejnegeri	Stejneger's Stonechat	AU	art
+11460	6670	Stenpikker	Oenanthe oenanthe	Northern Wheatear	A	art
+11440	6700	Isabellastenpikker	Oenanthe isabellina	Isabelline Wheatear	AU	art
+11490	6710	Ørkenstenpikker	Oenanthe deserti	Desert Wheatear	AU	art
+11482	6722	Østlig Middelhavsstenpikker	Oenanthe melanoleuca	Eastern Black-eared Wheatear	AU	art
+11481	6725	Vestlig Middelhavsstenpikker	Oenanthe hispanica	Western Black-eared Wheatear	AU	art
+11470	6730	Nonnestenpikker	Oenanthe pleschanka	Pied Wheatear	AU	art
+11570	6740	Hvidkronet Stenpikker	Oenanthe leucopyga	White-crowned Wheatear	AU	art
+11700	6750	Gulddrossel	Zoothera aurea	White's Thrush	AU	art
+11770	6760	Olivenskovdrossel	Catharus ustulatus	Swainson's Thrush	AU	art
+11760	6765	Eremitdrossel	Catharus guttatus	Hermit Thrush	AU	art
+12020	6770	Misteldrossel	Turdus viscivorus	Mistle Thrush	A	art
+12000	6780	Sangdrossel	Turdus philomelos	Song Thrush	A	art
+12010	6790	Vindrossel	Turdus iliacus	Redwing	A	art
+11870	6820	Solsort	Turdus merula	Common Blackbird	A	art
+12030	6830	Vandredrossel	Turdus migratorius	American Robin	AU	art
+11950	6840	Gråstrubet Drossel	Turdus obscurus	Eyebrowed Thrush	AU	art
+11980	6850	Sjagger	Turdus pilaris	Fieldfare	A	art
+11860	6870	Ringdrossel	Turdus torquatus	Ring Ouzel	A	art
+11962	6875	Brundrossel	Turdus eunomus	Dusky Thrush	AU	art
+11972	6880	Sortstrubet Drossel	Turdus atrogularis	Black-throated Thrush	AU	art
+10940	6920	Alpejernspurv	Prunella collaris	Alpine Accentor	AU	art
+10860	6930	Sibirisk Jernspurv	Prunella montanella	Siberian Accentor	AU	art
+10900	6935	Sortstrubet Jernspurv	Prunella atrogularis	Black-throated Accentor	AU	art
+10840	6940	Jernspurv	Prunella modularis	Dunnock	A	art
+15910	6950	Gråspurv	Passer domesticus	House Sparrow	A	art
+15920	6955	Spansk Spurv	Passer hispaniolensis	Spanish Sparrow	AU	art
+15980	6960	Skovspurv	Passer montanus	Eurasian Tree Sparrow	A	art
+16110	6985	Snefinke	Montifringilla nivalis	White-winged Snowfinch	AU	art
+10090	6990	Skovpiber	Anthus trivialis	Tree Pipit	A	art
+10080	7000	Tajgapiber	Anthus hodgsoni	Olive-backed Pipit	AU	art
+10120	7010	Rødstrubet Piber	Anthus cervinus	Red-throated Pipit	AS	art
+10110	7020	Engpiber	Anthus pratensis	Meadow Pipit	A	art
+10140	7030	Bjergpiber	Anthus spinoletta	Water Pipit	AS	art
+10135	7040	Skærpiber	Anthus petrosus	European Rock Pipit	A	art
+10020	7060	Storpiber	Anthus richardi	Richard's Pipit	AS	art
+10040	7070	Mongolsk Piber	Anthus godlewskii	Blyth's Pipit	AU	art
+10050	7080	Markpiber	Anthus campestris	Tawny Pipit	AS	art
+10170	7100	Gul Vipstjert	Motacilla flava	Western Yellow Wagtail	A	art
+10190	7160	Bjergvipstjert	Motacilla cinerea	Grey Wagtail	A	art
+10180	7170	Citronvipstjert	Motacilla citreola	Citrine Wagtail	AS	art
+10200	7190	Hvid Vipstjert	Motacilla alba	White Wagtail	A	art
+16360	7230	Bogfinke	Fringilla coelebs	Common Chaffinch	A	art
+16380	7240	Kvækerfinke	Fringilla montifringilla	Brambling	A	art
+17170	7270	Kernebider	Coccothraustes coccothraustes	Hawfinch	A	art
+16790	7280	Karmindompap	Carpodacus erythrinus	Common Rosefinch	A	art
+16890	7300	Rosenfinke	Carpodacus roseus	Pallas's Rosefinch	E	art
+16990	7310	Krognæb	Pinicola enucleator	Pine Grosbeak	AU	art
+17100	7320	Dompap	Pyrrhula pyrrhula	Eurasian Bullfinch	A	art
+16760	7350	Ørkendompap	Bucanetes githagineus	Trumpeter Finch	AU	art
+16740	7360	Ørkenfinke	Rhodospiza obsoleta	Desert Finch	E	art
+16490	7370	Grønirisk	Chloris chloris	European Greenfinch	A	art
+16500	7380	Brunirisk	Chloris sinica	Grey-capped Greenfinch	E	art
+16620	7390	Bjergirisk	Linaria flavirostris	Twite	A	art
+16600	7400	Tornirisk	Linaria cannabina	Common Linnet	A	art
+16634	7420	Nordlig Gråsisken	Acanthis flammea	Common Redpoll	A	art
+16635	7430	Lille Gråsisken	Acanthis cabaret	Lesser Redpoll	A	art
+16640	7450	Hvidsisken	Acanthis hornemanni	Arctic Redpoll	AS	art
+16680	7470	Stor Korsnæb	Loxia pytyopsittacus	Parrot Crossbill	AS	art
+16660	7480	Lille Korsnæb	Loxia curvirostra	Red Crossbill	A	art
+16650	7510	Hvidvinget Korsnæb	Loxia leucoptera	Two-barred Crossbill	AS	art
+16530	7520	Stillits	Carduelis carduelis	European Goldfinch	A	art
+16400	7530	Gulirisk	Serinus serinus	European Serin	AS	art
+16420	7540	Kanariefugl	Serinus canaria	Atlantic Canary	E	art
+16540	7550	Grønsisken	Spinus spinus	Eurasian Siskin	A	art
+18470	7560	Lapværling	Calcarius lapponicus	Lapland Longspur	A	art
+18500	7570	Snespurv	Plectrophenax nivalis	Snow Bunting	A	art
+18420	7590	Mørkøjet Junco	Junco hyemalis	Dark-eyed Junco	AU	art
+18400	7600	Hvidstrubet Spurv	Zonotrichia albicollis	White-throated Sparrow	AU	art
+18800	7610	Brunhovedet Værling	Emberiza bruniceps	Red-headed Bunting	AU	art
+18810	7620	Hætteværling	Emberiza melanocephala	Black-headed Bunting	AU	art
+18820	7640	Bomlærke	Emberiza calandra	Corn Bunting	A	art
+18600	7650	Klippeværling	Emberiza cia	Rock Bunting	AU	art
+18650	7660	Gulgrå Værling	Emberiza cineracea	Cinereous Bunting	AU	art
+18660	7670	Hortulan	Emberiza hortulana	Ortolan Bunting	AS	art
+18580	7680	Gærdeværling	Emberiza cirlus	Cirl Bunting	AU	art
+18570	7690	Gulspurv	Emberiza citrinella	Yellowhammer	A	art
+18560	7700	Hvidkindet Værling	Emberiza leucocephalos	Pine Bunting	AU	art
+18770	7710	Rørspurv	Emberiza schoeniclus	Common Reed Bunting	A	art
+18730	7720	Pileværling	Emberiza rustica	Rustic Bunting	AU	art
+18740	7730	Dværgværling	Emberiza pusilla	Little Bunting	AS	art
+18760	7740	Gulbrystet Værling	Emberiza aureola	Yellow-breasted Bunting	AU	art
+18710	7745	Gulbrynet Værling	Emberiza chrysophrys	Yellow-browed Bunting	AU	art
+17330	7755	Gul Sanger	Setophaga aestiva	American Yellow Warbler	AU	art
+17530	7760	Stribet Sanger	Setophaga striata	Blackpoll Warbler	AU	art
+18870	7770	Rosenbrystet Kernebider	Pheucticus ludovicianus	Rose-breasted Grosbeak	AU	art
+18920	7780	Indigofinke	Passerina cyanea	Indigo Bunting	DU	art
