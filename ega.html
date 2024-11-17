@@ -6,28 +6,40 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
 <body>
-    2024-11-17 06:00</p>Total: 74</p><hr>
+    <div id="timeAgo"></div>
+    <script>
+        // Function to calculate time ago
+        function timeAgo(dateString) {
+            const now = new Date();
+            const pastDate = new Date(dateString);
+            const seconds = Math.floor((now - pastDate) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const months = Math.floor(days / 30); // Approximate month
+            const years = Math.floor(months / 12); // Approximate year
 
-<figure class="figure">
-    <a class="text-decoration-none" target="_blank" href="https://www.google.com/search?q=Columba livia">
-    <img class="figure-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Paloma_brav%C3%ADa_%28Columba_livia%29%2C_Palacio_de_Nymphenburg%2C_M%C3%BAnich%2C_Alemania01.JPG/320px-Paloma_brav%C3%ADa_%28Columba_livia%29%2C_Palacio_de_Nymphenburg%2C_M%C3%BAnich%2C_Alemania01.JPG">
-    <figcaption class="figure-caption text-center">Rock Dove<br>Klippedue (tamdue) (20)</figcaption>
-    </a>
-</figure>
+            if (seconds < 60) {
+                return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+            } else if (minutes < 60) {
+                return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+            } else if (hours < 24) {
+                return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+            } else if (days < 30) {
+                return `${days} day${days !== 1 ? 's' : ''} ago`;
+            } else if (months < 12) {
+                return `${months} month${months !== 1 ? 's' : ''} ago`;
+            } else {
+                return `${years} year${years !== 1 ? 's' : ''} ago`;
+            }
+        }
 
-<figure class="figure">
-    <a class="text-decoration-none" target="_blank" href="https://www.google.com/search?q=Alopochen aegyptiaca">
-    <img class="figure-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Alopochen-aegyptiacus.jpg/320px-Alopochen-aegyptiacus.jpg">
-    <figcaption class="figure-caption text-center">Egyptian Goose<br>Nilgås (1)</figcaption>
-    </a>
-</figure>
+        // Example usage
+        const dateStr = "2024-11-17 08:40"; // Example date
+        document.getElementById("timeAgo").textContent = timeAgo(dateStr);
+    </script>
 
-<figure class="figure">
-    <a class="text-decoration-none" target="_blank" href="https://www.google.com/search?q=Anthus spinoletta">
-    <img class="figure-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Anthus_spinoletta_-_Water_Pipit%2C_Kahramanmara%C5%9F_2016-11-18_01-10.jpg/320px-Anthus_spinoletta_-_Water_Pipit%2C_Kahramanmara%C5%9F_2016-11-18_01-10.jpg">
-    <figcaption class="figure-caption text-center">Water Pipit<br>Bjergpiber (1)</figcaption>
-    </a>
-</figure>
+    2024-11-17 08:40</p>Total: 74</p><hr>
 <hr>
 
 <figure class="figure">
