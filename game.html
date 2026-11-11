@@ -264,7 +264,7 @@ body.cal #calView { display: block; }
   </div>
   <div class="progress"><div id="bar"></div></div>
   <div class="controls">
-    <input type="search" id="q" placeholder="Search name…" autocomplete="off">
+    <input type="search" id="q" placeholder="Search Danish, English or Latin…" autocomplete="off">
     <select id="sort" aria-label="Sort">
       <option value="tax">Taxonomic</option>
       <option value="da">Danish A–Z</option>
@@ -375,12 +375,12 @@ body.cal #calView { display: block; }
 <dialog id="addDlg">
   <form class="dlg" id="addForm" method="dialog">
     <h3>Add a bird</h3>
-    <p class="sub">For species not on the list. It is logged as seen today.</p>
-    <label class="f" for="aName">Name *</label>
-    <input type="text" id="aName" required autocomplete="off" placeholder="e.g. Hvidbrystet Præstekrave">
-    <label class="f" for="aOther">Other name (optional)</label>
-    <input type="text" id="aOther" autocomplete="off" placeholder="e.g. Kentish Plover">
-    <label class="f" for="aLatin">Latin (optional)</label>
+    <p class="sub">For species not on the list. Fill in at least one name. It is logged as seen today.</p>
+    <label class="f" for="aDa">Danish</label>
+    <input type="text" id="aDa" autocomplete="off" placeholder="e.g. Hvidbrystet Præstekrave">
+    <label class="f" for="aEn">English</label>
+    <input type="text" id="aEn" autocomplete="off" placeholder="e.g. Kentish Plover">
+    <label class="f" for="aLatin">Latin</label>
     <input type="text" id="aLatin" autocomplete="off" placeholder="e.g. Charadrius alexandrinus">
     <label class="f" for="aCount">How many?</label>
     <input type="number" id="aCount" inputmode="numeric" min="1" value="1">
@@ -538,7 +538,7 @@ function pic(b, cls) {
   return placeholder(b, cls);
 }
 function placeholder(b, cls) {
-  return el("div", "ph " + (cls || ""), (b.da || b.en || "?").trim().charAt(0).toUpperCase());
+  return el("div", "ph " + (cls || ""), (b.da || b.en || b.latin || "?").trim().charAt(0).toUpperCase());
 }
 function ago(t) {
   const m = Math.round((Date.now() - t) / 6e4);
@@ -555,8 +555,16 @@ function recency(s) {
   const d = daysBetween(s.last, today());
   return d <= 0 ? "today" : d < 7 ? "week" : "";
 }
-function title(b) { return b.en || b.da; }
-function subtitle(b) { return [b.en ? b.da : "", b.latin].filter(Boolean).join(" · "); }
+// lower-case, strip accents and spell æ/ø/å as ae/oe/aa so "graagaas" finds Grågås
+function fold(s) {
+  return s.toLowerCase().replace(/æ/g, "ae").replace(/ø/g, "oe").replace(/å/g, "aa")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+// English first, then Danish, then Latin for birds I added with only a Latin name
+function title(b) { return b.en || b.da || b.latin; }
+function subtitle(b) { return [b.en ? b.da : "", b.latin === title(b) ? "" : b.latin].filter(Boolean).join(" · "); }
+// key for matching birds by name (import/merge): Danish, else Latin, else English
+const nameKey = b => fold(b.da || b.latin || b.en || "");
 const plural = (n, w) => n + " " + w + (n === 1 || w === "species" ? "" : "s");
 
 // ---------- render ----------
@@ -574,6 +582,7 @@ function render() {
 
 function renderBirds(birds) {
   const q = $("#q").value.trim().toLowerCase();
+  const words = fold(q).split(/\s+/).filter(Boolean);
   const sort = $("#sort").value;
 
   // recently seen strip (last 7 days, newest first)
@@ -590,7 +599,10 @@ function renderBirds(birds) {
     if (filter === "unseen" && s) return false;
     if (filter === "recent" && !recency(s)) return false;
     if (filter === "today" && recency(s) !== "today") return false;
-    if (q && ![b.en, b.da, b.latin].some(x => x && x.toLowerCase().includes(q))) return false;
+    if (words.length) {
+      const hay = [b.en, b.da, b.latin].map(x => fold(x || "")).join(" | ");
+      if (!words.every(w => hay.includes(w))) return false;
+    }
     return true;
   });
   if (sort === "da" || sort === "en" || sort === "latin") {
@@ -620,8 +632,8 @@ function card(b) {
   c.append(pic(b));
   const n = el("div", "names");
   n.append(el("b", "", title(b)));
-  if (b.en) n.append(el("span", "da", b.da));
-  if (b.latin) n.append(el("i", "la", b.latin));
+  if (b.en && b.da) n.append(el("span", "da", b.da));
+  if (b.latin && b.latin !== title(b)) n.append(el("i", "la", b.latin));
   const badge = todays ? "×" + todays.c : s ? plural(s.days, "day") : "";
   c.append(n, el("span", "badge", badge), el("span", "when", s ? agoDay(s) : ""));
   c.setAttribute("aria-label", title(b) + (todays ? ", seen today: " + todays.c : s ? ", seen on " + plural(s.days, "day") : ", not seen"));
@@ -728,7 +740,7 @@ function renderCal(birds) {
     const b = inScope.get(id), s = stats[id];
     const r = el("button", "mrow");
     const nm = el("div");
-    nm.append(el("b", "", title(b)), el("small", "", b.en ? b.da : b.latin || ""));
+    nm.append(el("b", "", title(b)), el("small", "", subtitle(b)));
     const first = el("span", "c", fmtDay(s.first));
     if (prevFirst[id]) first.append(el("small", "", "(" + fmtDay(prevFirst[id]) + ")"));
     const strip = el("div", "strip");
@@ -825,12 +837,13 @@ $("#dDelete").onclick = () => {
 $("#dClose").onclick = () => $("#birdDlg").close();
 
 // add bird
-$("#addBtn").onclick = () => { $("#addForm").reset(); $("#addDlg").showModal(); $("#aName").focus(); };
+$("#addBtn").onclick = () => { $("#addForm").reset(); $("#addDlg").showModal(); $("#aDa").focus(); };
 $("#aCancel").onclick = () => $("#addDlg").close();
 $("#addForm").addEventListener("submit", e => {
-  const name = $("#aName").value.trim();
-  if (!name) { e.preventDefault(); return; }
-  const existing = everyBird().find(b => [b.da, b.en].some(x => x && x.toLowerCase() === name.toLowerCase()));
+  const nb = { da: $("#aDa").value.trim(), en: $("#aEn").value.trim(), latin: $("#aLatin").value.trim() };
+  const typed = [nb.da, nb.en, nb.latin].filter(Boolean).map(fold);
+  if (!typed.length) { e.preventDefault(); toast("Type a Danish, English or Latin name"); $("#aDa").focus(); return; }
+  const existing = everyBird().find(b => [b.da, b.en, b.latin].some(x => x && typed.includes(fold(x))));
   if (existing) {
     // already listed: open its card instead of creating a duplicate
     toast("“" + title(existing) + "” is already on the list");
@@ -838,10 +851,10 @@ $("#addForm").addEventListener("submit", e => {
     return;
   }
   const id = "custom:" + Date.now();
-  state.custom.push({ id, da: name, en: $("#aOther").value.trim(), latin: $("#aLatin").value.trim(), img: "" });
+  state.custom.push({ id, ...nb, img: "" });
   logSet(today(), id, readCount($("#aCount")));
   save(); render();
-  toast("Added " + name);
+  toast("Added " + title(nb));
 });
 
 // filters & search
@@ -860,7 +873,9 @@ function showScope() {
   document.title = SCOPES[scope] + " Bird List";
 }
 showScope();
-$("#q").addEventListener("input", render);
+// a new query can shrink the list a lot: show it from the top, or the first matches end up
+// scrolled out of view (e.g. "anser" showing only the mergansers at the bottom)
+$("#q").addEventListener("input", () => { render(); scrollTo(0, 0); });
 $("#sort").addEventListener("change", render);
 
 // More menu
@@ -956,20 +971,20 @@ function readImport(text) {
   const known = new Map();
   for (const b of everyBird()) {
     known.set(b.id.toLowerCase(), b.id);
-    if (b.da) known.set(b.da.toLowerCase(), b.id);
+    for (const x of [b.da, b.latin]) if (x) known.set(fold(x), b.id);
   }
   const entries = [], newBirds = new Map();
   let skipped = 0;
   for (const r of rows.slice(1)) {
-    const da = (r[iDa] || "").trim();
+    const da = (r[iDa] || "").trim(), en = iEn >= 0 ? (r[iEn] || "").trim() : "", la = iLa >= 0 ? (r[iLa] || "").trim() : "";
+    const key = nameKey({ da, en, latin: la });
     const c = Math.max(1, parseInt(iC >= 0 ? r[iC] : "1", 10) || 1);
     const dates = (iDate >= 0 ? [r[iDate]] : [r[iFirst], r[iLast]]).map(x => (x || "").trim().slice(0, 10)).filter(isYmd);
-    if (!da || !dates.length) { skipped++; continue; }
-    let id = known.get(da.toLowerCase());
+    if (!key || !dates.length) { skipped++; continue; }
+    let id = known.get(key) || (la && known.get(fold(la)));
     if (!id) {
-      id = newBirds.has(da.toLowerCase()) ? newBirds.get(da.toLowerCase()).id : "custom:" + Date.now() + "-" + newBirds.size;
-      if (!newBirds.has(da.toLowerCase()))
-        newBirds.set(da.toLowerCase(), { id, da, en: iEn >= 0 ? (r[iEn] || "").trim() : "", latin: iLa >= 0 ? (r[iLa] || "").trim() : "", img: "" });
+      id = newBirds.has(key) ? newBirds.get(key).id : "custom:" + Date.now() + "-" + newBirds.size;
+      if (!newBirds.has(key)) newBirds.set(key, { id, da, en, latin: la, img: "" });
     }
     for (const d of new Set(dates)) entries.push({ date: d, id, c });
   }
@@ -996,12 +1011,12 @@ $("#iOk").onclick = () => {
   if (!pending) return;
   const replace = document.querySelector("input[name=imode]:checked").value === "replace";
   if (replace) state = { log: {}, custom: [] };
-  const haveCustom = new Set(state.custom.map(c => c.da.toLowerCase()));
+  const haveCustom = new Set(state.custom.map(nameKey));
   const remap = {};
   for (const b of pending.newBirds) {
-    const same = state.custom.find(c => c.da.toLowerCase() === b.da.toLowerCase());
+    const same = state.custom.find(c => nameKey(c) === nameKey(b));
     if (same) remap[b.id] = same.id;
-    else if (!haveCustom.has(b.da.toLowerCase())) state.custom.push(b);
+    else if (!haveCustom.has(nameKey(b))) state.custom.push(b);
   }
   for (const e of pending.entries) logSet(e.date, remap[e.id] || e.id, e.c);
   save(); render(); $("#importDlg").close();
