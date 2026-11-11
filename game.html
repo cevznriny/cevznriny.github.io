@@ -185,6 +185,18 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
 }
 .check { display: flex; gap: 8px; align-items: center; margin: 12px 0; font-size: 14px; }
 
+/* Daily backup reminder */
+#backupBar {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0 12px;
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow);
+}
+#backupBar[hidden] { display: none; }
+#backupBar p { flex: 1 1 180px; margin: 0; font-size: 14px; }
+#backupBar small { display: block; color: var(--muted); font-size: 12.5px; }
+#backupBar button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 7px 12px; font-size: 14px; font-weight: 600; }
+#backupBar .primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+#backupBar .later { background: none; border-color: transparent; color: var(--muted); font-weight: 500; }
+
 /* Toast */
 #toast {
   position: fixed; left: 50%; bottom: calc(70px + env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
@@ -289,6 +301,12 @@ body.cal #calView { display: block; }
 </header>
 
 <main>
+  <div id="backupBar" role="region" aria-label="Backup" hidden>
+    <p><b>Back up your bird log</b><small id="backupWhen"></small></p>
+    <button class="primary" id="bkFile">Save file</button>
+    <button id="bkShare" hidden>Share</button>
+    <button class="later" id="bkLater">Not today</button>
+  </div>
   <div id="birdsView">
     <section id="recentWrap" hidden>
       <h2>Recently seen</h2>
@@ -437,6 +455,7 @@ const BIRDS = [{"id":"Knopsvane","da":"Knopsvane","en":"Mute Swan","latin":"Cygn
 const KEY = "ega-birds-v2";            // { log: { "YYYY-MM-DD": { id: { c: count, t: ms } } }, custom: [...] }
 const KEY_V1 = "ega-birds-seen-v1";    // old { seen: { id: { count, first, last } } }, kept as a backup
 const SCOPE_KEY = "ega-birds-scope";
+const BACKUP_KEY = "ega-birds-backup";  // { day: last backup "YYYY-MM-DD", sig: hash of the log then, later: day dismissed }
 const SCOPES = { ega: "Egå Engsø", dk: "Denmark" };
 const DAY = 864e5;
 let scope = "ega";
@@ -578,6 +597,7 @@ function render() {
   $("#totalN").textContent = birds.length;
   $("#bar").style.width = (birds.length ? seenCount / birds.length * 100 : 0) + "%";
   if (view === "cal") renderCal(birds); else renderBirds(birds);
+  updateBackupBar();
 }
 
 function renderBirds(birds) {
@@ -907,35 +927,67 @@ function csv() {
 function csvName() { return "bird-log-" + today() + ".csv"; }
 function nothingLogged() { if (!Object.keys(state.log).length) { toast("Nothing logged yet"); return true; } }
 
-$("#csvBtn").onclick = () => {
-  $("#moreDlg").close();
+function saveFile() {
   if (nothingLogged()) return;
   const url = URL.createObjectURL(new Blob([csv()], { type: "text/csv;charset=utf-8" }));
   const a = el("a"); a.href = url; a.download = csvName();
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
-};
+  backedUp(); // the browser doesn't say whether the download was kept; count the tap
+}
+$("#csvBtn").onclick = () => { $("#moreDlg").close(); saveFile(); };
 
 // Web Share: needs a secure context (https) and a supporting browser
+const canShareFile = () => {
+  try { return !!(navigator.canShare && navigator.canShare({ files: [new File([""], "x.csv", { type: "text/csv" })] })); }
+  catch (e) { return false; }
+};
+async function shareCsv(fileOnly) {
+  if (nothingLogged()) return;
+  computeSeen();
+  const file = new File([csv()], csvName(), { type: "text/csv" });
+  const seen = allBirds().filter(b => SEEN[b.id]).sort((a, b) => a.order - b.order);
+  const todays = seen.filter(b => logGet(today(), b.id));
+  const head = SCOPES[scope] + ": " + plural(seen.length, "species") + " seen" + (todays.length ? ", " + todays.length + " today" : "");
+  const text = head + "\n" + (todays.length ? todays : seen).map(b => "• " + title(b) + (logGet(today(), b.id) ? " ×" + logGet(today(), b.id).c : "")).join("\n");
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: SCOPES[scope] + " birds", text: head });
+      backedUp();
+    } else if (!fileOnly) await navigator.share({ title: SCOPES[scope] + " birds", text });
+  } catch (e) {
+    if (e.name !== "AbortError") toast("Sharing failed");
+  }
+}
 if (navigator.share) {
   $("#shareBtn").hidden = false;
-  $("#shareBtn").onclick = async () => {
-    $("#moreDlg").close();
-    if (nothingLogged()) return;
-    computeSeen();
-    const file = new File([csv()], csvName(), { type: "text/csv" });
-    const seen = allBirds().filter(b => SEEN[b.id]).sort((a, b) => a.order - b.order);
-    const todays = seen.filter(b => logGet(today(), b.id));
-    const head = SCOPES[scope] + ": " + plural(seen.length, "species") + " seen" + (todays.length ? ", " + todays.length + " today" : "");
-    const text = head + "\n" + (todays.length ? todays : seen).map(b => "• " + title(b) + (logGet(today(), b.id) ? " ×" + logGet(today(), b.id).c : "")).join("\n");
-    try {
-      if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: SCOPES[scope] + " birds", text: head });
-      else await navigator.share({ title: SCOPES[scope] + " birds", text });
-    } catch (e) {
-      if (e.name !== "AbortError") toast("Sharing failed");
-    }
-  };
+  $("#shareBtn").onclick = () => { $("#moreDlg").close(); shareCsv(false); };
 }
+
+// ---------- daily backup reminder ----------
+// Browsers can't save files on their own, so once a day, if the log changed since the
+// last backup, offer a one-tap file download and/or share (e.g. to Files, Drive, mail).
+function logSig() {
+  const j = JSON.stringify(state);
+  let h = 0;
+  for (let i = 0; i < j.length; i++) h = (h * 31 + j.charCodeAt(i)) | 0;
+  return j.length + ":" + h;
+}
+function backupInfo() { try { return JSON.parse(localStorage.getItem(BACKUP_KEY)) || {}; } catch (e) { return {}; } }
+function setBackupInfo(o) { try { localStorage.setItem(BACKUP_KEY, JSON.stringify({ ...backupInfo(), ...o })); } catch (e) {} }
+function backedUp() { setBackupInfo({ day: today(), sig: logSig() }); updateBackupBar(); }
+function updateBackupBar() {
+  const b = backupInfo(), t = today();
+  const show = Object.keys(state.log).length > 0 && b.sig !== logSig() && b.day !== t && b.later !== t;
+  $("#backupBar").hidden = !show;
+  if (show) $("#backupWhen").textContent = b.day
+    ? "Last backup " + (daysBetween(b.day, t) === 1 ? "yesterday" : daysBetween(b.day, t) + " days ago") + " (" + fmtDay(b.day, true) + ")"
+    : "Not backed up yet. Your list is only stored in this browser.";
+}
+$("#bkShare").hidden = !(navigator.share && canShareFile());
+$("#bkFile").onclick = saveFile;
+$("#bkShare").onclick = () => shareCsv(true);
+$("#bkLater").onclick = () => { setBackupInfo({ later: today() }); updateBackupBar(); };
 
 // ---------- CSV import ----------
 function parseCsv(text) {
