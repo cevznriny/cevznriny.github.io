@@ -1,30 +1,39 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-    body {
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    }
-
-    a { color: black; }
-    a:link { text-decoration: none; }
-    a:visited { text-decoration: none; }
-    a:hover { text-decoration: none; }
-    a:active { text-decoration: none; }
- </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOF Bird Pages</title>
+<style>
+:root { --bg: #f4f6f3; --surface: #fff; --text: #17201b; --muted: #5f6b64; --line: #d5ddd6; --accent: #1f6f4a; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #101512; --surface: #1a211d; --text: #e6ece8; --muted: #9aa8a0; --line: #2f3a34; --accent: #5cc08d; }
+}
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 640px; margin: 0 auto; padding: 24px 16px; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+p.sub { color: var(--muted); margin: 0 0 20px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 24px 0 8px; }
+a.item { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; color: inherit; text-decoration: none; }
+a.item:hover { border-color: var(--accent); }
+a.item b { display: block; color: var(--accent); }
+a.item span { font-size: 14px; color: var(--muted); }
+</style>
 </head>
 <body>
+<main>
+  <h1>DOF bird pages</h1>
+  <p class="sub">Built daily from DOFbasen.</p>
 
-<nav>
-<p><a href="ega.html">Egå Engsø latest 14 days maximum</a></p>
-<p><a href="Egå Engsø.html">Egå Engsø monthly charts</a></p>
-<p><a href="ega_alltime.html">Egå Engsø all time</a></p>
+  <h2>Egå Engsø</h2>
+  <a class="item" href="ega.html"><b>Latest 14 days</b><span>Species seen in the last two weeks, highest counts first, new species on top</span></a>
+  <a class="item" href="all.html"><b>All time</b><span>Every species recorded at Egå Engsø</span></a>
 
-<p><a href="denmark.html">Denmark NEW</a></p>
-<p><a href="denmark_alltime.html">Denmark all time</a></p>
+  <h2>Denmark</h2>
+  <a class="item" href="dof_species.html"><b>All Danish species</b><span>The DOF species list, with pictures</span></a>
 
-<p><a href="birds.html">All Species NEW</a></p>
-<p><a href="species.html">All Species</a></p>
-
-<p><a href="denmark species.html">Denmark Species</a></p>
-</nav>
+  <h2>Game</h2>
+  <a class="item" href="game.html"><b>Bird list game</b><span>Tick off the birds you have seen, Egå Engsø or all of Denmark</span></a>
+</main>
+</body>
+</html>
