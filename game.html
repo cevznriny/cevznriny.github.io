@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1f6f4a">
 <title>Bird List</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 :root {
   --bg: #f4f6f3;
@@ -192,6 +195,63 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
 #toast.show { opacity: 1; transform: translateX(-50%); pointer-events: auto; }
 #toast button { background: none; border: 0; color: var(--week); font-weight: 700; padding: 4px 6px; }
 @media (prefers-color-scheme: dark) { #toast button { color: var(--accent-ink); background: var(--accent); border-radius: 8px; } }
+
+/* Views: birds grid / calendar */
+body.cal header .controls, body.cal header .chips, body.cal header .legend { display: none; }
+#calView { display: none; }
+body.cal #birdsView { display: none; }
+body.cal #calView { display: block; }
+.panel { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 14px; margin-bottom: 14px; }
+.panel h2 { font-size: 16px; margin: 0 0 10px; }
+.panel .hint { font-size: 13px; color: var(--muted); margin: -4px 0 10px; }
+.calnav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.calnav b { font-size: 17px; }
+.calnav button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; width: 40px; height: 36px; font-size: 18px; }
+.month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.month .wd { font-size: 11.5px; color: var(--muted); text-align: center; padding: 2px 0; }
+.day {
+  aspect-ratio: 1; border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+.day span { font-size: 13px; }
+.day small { font-size: 11px; font-weight: 700; min-height: 1em; }
+.day.today { outline: 2px solid var(--today); outline-offset: -2px; }
+.day.sel { border: 2px solid var(--text); }
+.day:disabled { opacity: .35; }
+.day.dark { color: var(--accent-ink); }
+.stats { font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+.drow, .mrow {
+  display: grid; width: 100%; border: 0; background: none; text-align: left; padding: 8px 0;
+  border-bottom: 1px solid var(--line); align-items: center; gap: 2px 12px;
+}
+.drow:last-child, .mrow:last-child { border-bottom: 0; }
+.drow { grid-template-columns: 56px 1fr auto; }
+.drow img, .drow .ph { width: 56px; height: 42px; object-fit: contain; border-radius: 8px; background: var(--surface-2); font-size: 18px; }
+.drow b, .mrow b { display: block; font-size: 14px; }
+.drow small, .mrow small { display: block; font-size: 12px; color: var(--muted); }
+.drow .n { font-weight: 700; font-variant-numeric: tabular-nums; }
+.mtools { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.mtools select { padding: 7px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
+.mhead, .mrow { grid-template-columns: minmax(0, 1fr) 64px 64px 40px; }
+.mhead { display: grid; gap: 2px 12px; font-size: 12px; color: var(--muted); padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+.mhead span:not(:first-child), .mrow .c { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; }
+.mrow .c small { text-align: right; }
+.months, .strip { grid-column: 1 / -1; display: grid; gap: 1px; }
+.months { grid-template-columns: repeat(12, 1fr); font-size: 10.5px; color: var(--muted); }
+.strip { grid-template-columns: repeat(53, 1fr); height: 10px; margin-top: 4px; }
+.strip i { background: var(--surface-2); border-radius: 1px; }
+.strip i.on { background: var(--accent); }
+.strip i.now { box-shadow: inset 0 -2px 0 var(--today); }
+.hist { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; max-height: 120px; overflow-y: auto; }
+.hist button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 3px 10px; font-size: 12.5px; }
+.hist button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.dlg input[type=date] { padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 16px; }
+.menu button { display: block; width: 100%; text-align: left; padding: 13px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; font-size: 16px; }
+.menu button:last-child { border-bottom: 0; }
+.menu .danger { color: var(--danger); }
+.radio { display: flex; gap: 8px; align-items: flex-start; margin: 10px 0; font-size: 14px; }
+.radio small { display: block; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -215,31 +275,70 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
   </div>
   <div class="chips" role="group" aria-label="Filter">
     <button class="chip" data-f="all" aria-pressed="true">All</button>
-    <button class="chip" data-f="unseen" aria-pressed="false">Not seen</button>
-    <button class="chip" data-f="seen" aria-pressed="false">Seen</button>
+    <button class="chip" data-f="today" aria-pressed="false">Today</button>
     <button class="chip" data-f="recent" aria-pressed="false">Last 7 days</button>
+    <button class="chip" data-f="seen" aria-pressed="false">Seen</button>
+    <button class="chip" data-f="unseen" aria-pressed="false">Not seen</button>
   </div>
   <div class="legend" aria-hidden="true">
-    <span><i style="--c:var(--accent)"></i>Seen</span>
-    <span><i style="--c:var(--week)"></i>Last 7 days</span>
     <span><i style="--c:var(--today)"></i>Today</span>
+    <span><i style="--c:var(--week)"></i>Last 7 days</span>
+    <span><i style="--c:var(--accent)"></i>Seen</span>
     <span><i style="--c:var(--line)"></i>Not seen</span>
   </div>
 </header>
 
 <main>
-  <section id="recentWrap" hidden>
-    <h2>Recently seen</h2>
-    <div id="recent"></div>
-  </section>
-  <div id="grid"></div>
+  <div id="birdsView">
+    <section id="recentWrap" hidden>
+      <h2>Recently seen</h2>
+      <div id="recent"></div>
+    </section>
+    <div id="grid"></div>
+  </div>
+
+  <div id="calView">
+    <section class="panel">
+      <div class="calnav">
+        <button id="mPrev" aria-label="Previous month">‹</button>
+        <b id="mTitle"></b>
+        <button id="mNext" aria-label="Next month">›</button>
+      </div>
+      <div class="month" id="month"></div>
+    </section>
+
+    <section class="panel">
+      <h2 id="dayTitle"></h2>
+      <p class="stats" id="dayStats"></p>
+      <div id="dayList"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Migration</h2>
+      <p class="hint">First and last date each species was logged in the year, and the weeks it was seen.</p>
+      <div class="mtools">
+        <select id="mYear" aria-label="Year"></select>
+        <select id="mSort" aria-label="Sort">
+          <option value="first">By arrival</option>
+          <option value="last">By last seen</option>
+          <option value="days">By days seen</option>
+          <option value="tax">Taxonomic</option>
+          <option value="name">A–Z</option>
+        </select>
+      </div>
+      <p class="stats" id="yearStats"></p>
+      <div class="mhead"><span>Species</span><span>Arrived</span><span>Last</span><span>Days</span>
+        <div class="months"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+      </div>
+      <div id="mList"></div>
+    </section>
+  </div>
 </main>
 
 <nav class="actions">
   <button class="primary" id="addBtn">+ Add bird</button>
-  <button id="csvBtn">Export CSV</button>
-  <button id="shareBtn" hidden>Share</button>
-  <button id="resetBtn">Reset</button>
+  <button id="viewBtn">Calendar</button>
+  <button id="moreBtn">More</button>
 </nav>
 
 <div id="toast" role="status"><span id="toastMsg"></span><button id="toastAct"></button></div>
@@ -250,6 +349,8 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
     <div id="dImg"></div>
     <h3 id="dEn"></h3>
     <p class="sub" id="dDa"></p>
+    <label class="f" for="dDate">Day</label>
+    <input type="date" id="dDate">
     <label class="f" for="dCount">How many?</label>
     <div class="stepper">
       <button type="button" id="dMinus" aria-label="Fewer">−</button>
@@ -258,10 +359,12 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
     </div>
     <p class="meta" id="dMeta"></p>
     <div class="row">
-      <button class="primary" id="dSave">Seen</button>
-      <button class="danger" id="dRemove">Not seen</button>
+      <button class="primary" id="dSave">Log this day</button>
+      <button class="danger" id="dRemove">Remove this day</button>
     </div>
-    <div class="row" style="margin-top:8px">
+    <label class="f" id="dHistLabel">Days seen</label>
+    <div class="hist" id="dHist"></div>
+    <div class="row">
       <button id="dDelete" class="danger" hidden>Delete added bird</button>
       <button id="dClose">Close</button>
     </div>
@@ -272,7 +375,7 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
 <dialog id="addDlg">
   <form class="dlg" id="addForm" method="dialog">
     <h3>Add a bird</h3>
-    <p class="sub">For species not on the list.</p>
+    <p class="sub">For species not on the list. It is logged as seen today.</p>
     <label class="f" for="aName">Name *</label>
     <input type="text" id="aName" required autocomplete="off" placeholder="e.g. Hvidbrystet Præstekrave">
     <label class="f" for="aOther">Other name (optional)</label>
@@ -286,6 +389,34 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
       <button type="submit" class="primary">Add as seen</button>
     </div>
   </form>
+</dialog>
+
+<!-- More -->
+<dialog id="moreDlg">
+  <div class="menu">
+    <button id="csvBtn">Export CSV</button>
+    <button id="importBtn">Import CSV…</button>
+    <button id="shareBtn" hidden>Share</button>
+    <button id="resetBtn" class="danger">Reset…</button>
+    <button id="moreClose">Close</button>
+  </div>
+</dialog>
+<input type="file" id="importFile" accept=".csv,text/csv,text/plain" hidden>
+
+<!-- Import -->
+<dialog id="importDlg">
+  <div class="dlg">
+    <h3>Import CSV</h3>
+    <p class="sub" id="iSummary"></p>
+    <label class="radio"><input type="radio" name="imode" value="merge" checked>
+      <span>Merge<small>Add these sightings to the ones on this device. Days in both use the imported count.</small></span></label>
+    <label class="radio"><input type="radio" name="imode" value="replace">
+      <span>Replace<small>Delete everything on this device first.</small></span></label>
+    <div class="row" style="margin-top:12px">
+      <button id="iCancel">Cancel</button>
+      <button class="primary" id="iOk">Import</button>
+    </div>
+  </div>
 </dialog>
 
 <!-- Reset -->
@@ -303,25 +434,76 @@ label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4
 
 <script>
 const BIRDS = [{"id":"Knopsvane","da":"Knopsvane","en":"Mute Swan","latin":"Cygnus olor","img":"thumbs/330px-Mute_swan_Vrhnika.jpg","o":0,"od":3},{"id":"Sortsvane","da":"Sortsvane","en":"Black Swan","latin":"Cygnus atratus","img":"thumbs/330px-Black_Swan_2_-_Pitt_Town_Lagoon.jpg","o":1,"od":4},{"id":"Pibesvane","da":"Pibesvane","en":"Tundra Swan","latin":"Cygnus columbianus","img":"thumbs/330px-Cygnus_bewickii_01.jpg","o":2,"od":5},{"id":"Sangsvane","da":"Sangsvane","en":"Whooper Swan","latin":"Cygnus cygnus","img":"thumbs/330px-Cygnus_cygnus_Singschwan.jpg","o":3,"od":6},{"id":"Knortegås","da":"Knortegås","en":"Brant Goose","latin":"Branta bernicla","img":"thumbs/330px-Branta_bernicla_bernicla_-_Brent_Goose.jpg","o":4,"od":7},{"id":"Canadagås","da":"Canadagås","en":"Canada Goose","latin":"Branta canadensis","img":"thumbs/330px-Canada_goose_on_Seedskadee_NWR_%2827826185489%29.jpg","o":5,"od":9},{"id":"Bramgås","da":"Bramgås","en":"Barnacle Goose","latin":"Branta leucopsis","img":"thumbs/330px-Barnacle-Goose.jpg","o":6,"od":10},{"id":"Dværgcanadagås","da":"Dværgcanadagås","en":"Cackling Goose","latin":"Branta hutchinsii","img":"thumbs/330px-AleutianCanadaGoose2.jpg","o":7,"od":11,"esc":1},{"id":"Indisk Gås","da":"Indisk Gås","en":"Bar-headed Goose","latin":"Anser indicus","img":"thumbs/330px-Bar-headed_Goose_-_St_James%27s_Park%2C_London_-_Nov_2006.jpg","o":8,"od":12},{"id":"Snegås","da":"Snegås","en":"Snow Goose","latin":"Anser caerulescens","img":"thumbs/330px-Snow_goose_in_Central_Park_%2833138%29.jpg","o":9,"od":15,"esc":1},{"id":"Grågås","da":"Grågås","en":"Greylag Goose","latin":"Anser anser","img":"thumbs/330px-Greylag_Goose_-_St_James%27s_Park%2C_London_-_Nov_2006.jpg","o":10,"od":16},{"id":"Blisgås","da":"Blisgås","en":"Greater White-fronted Goose","latin":"Anser albifrons","img":"thumbs/330px-Greater_white-fronted_goose_in_flight-1045.jpg","o":11,"od":19},{"id":"Tundrasædgås","da":"Tundrasædgås","en":"Tundra Bean Goose","latin":"Anser serrirostris","img":"thumbs/330px-Tundra_Bean_Goose.jpg","o":12,"od":20},{"id":"Kortnæbbet Gås","da":"Kortnæbbet Gås","en":"Pink-footed Goose","latin":"Anser brachyrhynchus","img":"thumbs/330px-Anser_brachyrhynchus.jpg","o":13,"od":21},{"id":"Tajgasædgås","da":"Tajgasædgås","en":"Taiga Bean Goose","latin":"Anser fabalis","img":"thumbs/330px-Bean.goose.600pix.jpg","o":14,"od":22},{"id":"Moskusand","da":"Moskusand","en":"Muscovy Duck","latin":"Cairina moschata","img":"thumbs/330px-MuscovyDuck.jpg","o":15,"od":23,"esc":1},{"id":"Mandarinand","da":"Mandarinand","en":"Mandarin Duck","latin":"Aix galericulata","img":"thumbs/330px-Pair_of_mandarin_ducks.jpg","o":16,"od":24},{"id":"Magellangås","da":"Magellangås","en":"Upland Goose","latin":"Chloephaga picta","img":"thumbs/330px-Chloephaga_picta.jpg","o":17,"od":26,"esc":1},{"id":"Nilgås","da":"Nilgås","en":"Egyptian Goose","latin":"Alopochen aegyptiaca","img":"thumbs/330px-Alopochen-aegyptiacus.jpg","o":18,"od":27},{"id":"Gravand","da":"Gravand","en":"Common Shelduck","latin":"Tadorna tadorna","img":"thumbs/330px-Common_Shelduck_%28Tadorna_tadorna%29_at_Sylvan_Heights.jpg","o":19,"od":28},{"id":"Rustand","da":"Rustand","en":"Ruddy Shelduck","latin":"Tadorna ferruginea","img":"thumbs/330px-A_couple_of_Tadorna_ferruginea.jpg","o":20,"od":29},{"id":"Havlit","da":"Havlit","en":"Long-tailed Duck","latin":"Clangula hyemalis","img":"thumbs/330px-Long-tailed-duck.jpg","o":21,"od":30},{"id":"Ederfugl","da":"Ederfugl","en":"Common Eider","latin":"Somateria mollissima","img":"thumbs/330px-Common_eider_male_at_Jones_Beach_%2804702%29.jpg","o":22,"od":33},{"id":"Sortand","da":"Sortand","en":"Common Scoter","latin":"Melanitta nigra","img":"thumbs/330px-Eurasian_common_scoter.jpg","o":23,"od":34},{"id":"Fløjlsand","da":"Fløjlsand","en":"Velvet Scoter","latin":"Melanitta fusca","img":"thumbs/330px-Velvet_Scoter%2C_Eyebrook_Reservoir%2C_Leics.jpg","o":24,"od":37},{"id":"Hvinand","da":"Hvinand","en":"Common Goldeneye","latin":"Bucephala clangula","img":"thumbs/330px-Common_Goldeneye_%28Bucephala_clangula%29.jpg","o":25,"od":41},{"id":"Lille Skallesluger","da":"Lille Skallesluger","en":"Smew","latin":"Mergellus albellus","img":"thumbs/330px-Zwergsaeger_maenchen_weibchen.jpg","o":26,"od":42},{"id":"Toppet Skallesluger","da":"Toppet Skallesluger","en":"Red-breasted Merganser","latin":"Mergus serrator","img":"thumbs/330px-Mergus_serrator_-New_Jersey_-USA_-winter-8.jpg","o":27,"od":44},{"id":"Stor Skallesluger","da":"Stor Skallesluger","en":"Common Merganser","latin":"Mergus merganser","img":"thumbs/330px-Mergus_merganser_-Sandwell_-England_-male-8.jpg","o":28,"od":45},{"id":"Rødhovedet And","da":"Rødhovedet And","en":"Red-crested Pochard","latin":"Netta rufina","img":"thumbs/330px-Netta_rufina_%28Red-crested_Pochard%29_Male%2C_London_Wetland_Centre_-_Diliff.jpg","o":29,"od":47},{"id":"Hvidøjet And","da":"Hvidøjet And","en":"Ferruginous Duck","latin":"Aythya nyroca","img":"thumbs/330px-Aythya_nyroca_at_Martin_Mere_1.jpg","o":30,"od":48},{"id":"Taffeland","da":"Taffeland","en":"Common Pochard","latin":"Aythya ferina","img":"thumbs/330px-Aythya_ferina_Sandwell_2.jpg","o":31,"od":49},{"id":"Troldand","da":"Troldand","en":"Tufted Duck","latin":"Aythya fuligula","img":"thumbs/330px-Tufted-Duck-male-female.jpg","o":32,"od":51},{"id":"Bjergand","da":"Bjergand","en":"Greater Scaup","latin":"Aythya marila","img":"thumbs/330px-Greater-scaup-male2.jpg","o":33,"od":53},{"id":"Sibirisk Krikand","da":"Sibirisk Krikand","en":"Baikal Teal","latin":"Sibirionetta formosa","img":"thumbs/330px-Anas.formosa.4.jpg","o":34,"od":54},{"id":"Atlingand","da":"Atlingand","en":"Garganey","latin":"Spatula querquedula","img":"thumbs/330px-Garganey_%28Anas_querquedula%29_RWD3.jpg","o":35,"od":55},{"id":"Blåvinget And","da":"Blåvinget And","en":"Blue-winged Teal","latin":"Spatula discors","img":"thumbs/330px-Blue-Winged_Teal.jpg","o":36,"od":56},{"id":"Skeand","da":"Skeand","en":"Northern Shoveler","latin":"Spatula clypeata","img":"thumbs/330px-Northern_shoveler_Steve_Sinclair_outreach_use_only_%2819838806616%29.jpg","o":37,"od":58},{"id":"Knarand","da":"Knarand","en":"Gadwall","latin":"Mareca strepera","img":"thumbs/330px-Gadwall-Anas-strepera.jpg","o":38,"od":60},{"id":"Pibeand","da":"Pibeand","en":"Eurasian Wigeon","latin":"Mareca penelope","img":"thumbs/330px-Mareca_penelope_kuribo_cropped.jpg","o":39,"od":61},{"id":"Gråand","da":"Gråand","en":"Mallard","latin":"Anas platyrhynchos","img":"thumbs/330px-Anas_platyrhynchos_male_female_quadrat.jpg","o":40,"od":64},{"id":"Spidsand","da":"Spidsand","en":"Northern Pintail","latin":"Anas acuta","img":"thumbs/330px-Northern_Pintails_%28Male_%26_Female%29_I_IMG_0911.jpg","o":41,"od":66},{"id":"Krikand","da":"Krikand","en":"Eurasian Teal","latin":"Anas crecca","img":"thumbs/330px-Eurasian_teal_%28Anas_crecca%29_Photograph_by_Shantanu_Kuveskar.jpg","o":42,"od":67},{"id":"Agerhøne","da":"Agerhøne","en":"Grey Partridge","latin":"Perdix perdix","img":"thumbs/330px-Perdix_perdix_%28Marek_Szczepanek%29.jpg","o":43,"od":70},{"id":"Fasan","da":"Fasan","en":"Common Pheasant","latin":"Phasianus colchicus","img":"thumbs/330px-Common_pheasant_%28Phasianus_colchicus%29_cock_2.jpg","o":44,"od":73},{"id":"Vagtel","da":"Vagtel","en":"Common Quail","latin":"Coturnix coturnix","img":"thumbs/330px-Coturnix_coturnix%2C_Fraunberg%2C_Bayern%2C_Deutschland_1%2C_Ausschnitt.jpg","o":45,"od":75},{"id":"Lille Lappedykker","da":"Lille Lappedykker","en":"Little Grebe","latin":"Tachybaptus ruficollis","img":"thumbs/330px-Little_grebe_Zwergtaucher.jpg","o":46,"od":82},{"id":"Nordisk Lappedykker","da":"Nordisk Lappedykker","en":"Horned Grebe","latin":"Podiceps auritus","img":"thumbs/330px-Podiceps_auritus_%2813909539717%29.jpg","o":47,"od":83},{"id":"Gråstrubet Lappedykker","da":"Gråstrubet Lappedykker","en":"Red-necked Grebe","latin":"Podiceps grisegena","img":"thumbs/330px-Gr%C3%A8bejougrisparade.jpg","o":48,"od":84},{"id":"Toppet Lappedykker","da":"Toppet Lappedykker","en":"Great Crested Grebe","latin":"Podiceps cristatus","img":"thumbs/330px-Great_Crested_Grebe_1_-_Penrith.jpg","o":49,"od":85},{"id":"Sorthalset Lappedykker","da":"Sorthalset Lappedykker","en":"Black-necked Grebe","latin":"Podiceps nigricollis","img":"thumbs/330px-Black-necked_Grebe_Schwarzhalstaucher.jpg","o":50,"od":86},{"id":"Gøg","da":"Gøg","en":"Common Cuckoo","latin":"Cuculus canorus","img":"thumbs/330px-Cuculus_canorus_vogelartinfo_chris_romeiks_CHR0791_cropped.jpg","o":51,"od":93},{"id":"Tyrkerdue","da":"Tyrkerdue","en":"Eurasian Collared Dove","latin":"Streptopelia decaocto","img":"thumbs/330px-Eurasian_collared-dove_%28Streptopelia_decaocto%29.jpg","o":52,"od":98},{"id":"Ringdue","da":"Ringdue","en":"Common Wood Pigeon","latin":"Columba palumbus","img":"thumbs/330px-Columba_palumbus_-garden_post-8.jpg","o":53,"od":99},{"id":"Klippedue (tamdue)","da":"Klippedue (tamdue)","en":"Rock Dove","latin":"Columba livia","img":"thumbs/330px-Paloma_brav%C3%ADa_%28Columba_livia%29%2C_Palacio_de_Nymphenburg%2C_M%C3%BAnich%2C_Alemania01.JPG","o":54,"od":100},{"id":"Huldue","da":"Huldue","en":"Stock Dove","latin":"Columba oenas","img":"thumbs/330px-Columba_oenas1.jpg","o":55,"od":101},{"id":"Trane","da":"Trane","en":"Common Crane","latin":"Grus grus","img":"thumbs/330px-Common_crane_grus_grus.jpg","o":56,"od":105},{"id":"Vandrikse","da":"Vandrikse","en":"Water Rail","latin":"Rallus aquaticus","img":"thumbs/330px-Water_rail_2022_04_30_01.jpg","o":57,"od":106},{"id":"Engsnarre","da":"Engsnarre","en":"Corn Crake","latin":"Crex crex","img":"thumbs/330px-Ruisr%C3%A4%C3%A4kk%C3%A4.JPG","o":58,"od":107},{"id":"Plettet Rørvagtel","da":"Plettet Rørvagtel","en":"Spotted Crake","latin":"Porzana porzana","img":"thumbs/330px-Porzana_porzana_6_%28Marek_Szczepanek%29.jpg","o":59,"od":108},{"id":"Rørhøne","da":"Rørhøne","en":"Common Moorhen","latin":"Gallinula chloropus","img":"thumbs/330px-Common_moorhen_%28Gallinula_chloropus%29_France.jpg","o":60,"od":109},{"id":"Blishøne","da":"Blishøne","en":"Eurasian Coot","latin":"Fulica atra","img":"thumbs/330px-%D0%9B%D1%8B%D1%81%D1%83%D1%85%D0%B0_%28Fulica_atra%29%2C_%D0%9A%D0%B0%D0%BB%D0%B8%D0%BD%D0%B8%D0%BD%D0%B3%D1%80%D0%B0%D0%B4.jpg","o":61,"od":110},{"id":"Klyde","da":"Klyde","en":"Pied Avocet","latin":"Recurvirostra avosetta","img":"thumbs/330px-Pied_Avocet_Recurvirostra_avosetta.jpg","o":62,"od":116},{"id":"Strandskade","da":"Strandskade","en":"Eurasian Oystercatcher","latin":"Haematopus ostralegus","img":"thumbs/330px-Haematopus_ostralegus_Norway.jpg","o":63,"od":118},{"id":"Strandhjejle","da":"Strandhjejle","en":"Grey Plover","latin":"Pluvialis squatarola","img":"thumbs/330px-Pluvialis_squatarola_%28summer_plumage%29.jpg","o":64,"od":119},{"id":"Hjejle","da":"Hjejle","en":"European Golden Plover","latin":"Pluvialis apricaria","img":"thumbs/330px-Kul%C3%ADk_zlat%C3%BD_%28Pluvialis_apricaria%29_a_%283949776435%29.jpg","o":65,"od":120},{"id":"Stor Præstekrave","da":"Stor Præstekrave","en":"Common Ringed Plover","latin":"Charadrius hiaticula","img":"thumbs/330px-Common_ringed_plover_%28Charadrius_hiaticula%29_Oppdal.jpg","o":66,"od":124},{"id":"Lille Præstekrave","da":"Lille Præstekrave","en":"Little Ringed Plover","latin":"Thinornis dubius","img":"thumbs/330px-Flussregenpfeifer_im_flachen_Wasser_01.jpg","o":67,"od":125},{"id":"Vibe","da":"Vibe","en":"Northern Lapwing","latin":"Vanellus vanellus","img":"thumbs/330px-Northern-Lapwing-Vanellus-vanellus.jpg","o":68,"od":126},{"id":"Småspove","da":"Småspove","en":"Eurasian Whimbrel","latin":"Numenius phaeopus","img":"thumbs/330px-Whimbrel_Numenius_phaeopus.jpg","o":69,"od":136},{"id":"Storspove","da":"Storspove","en":"Eurasian Curlew","latin":"Numenius arquata","img":"thumbs/330px-Eurasian_Curlew.jpg","o":70,"od":137},{"id":"Lille Kobbersneppe","da":"Lille Kobbersneppe","en":"Bar-tailed Godwit","latin":"Limosa lapponica","img":"thumbs/330px-Bar-tailed_Godwit.jpg","o":71,"od":138},{"id":"Stor Kobbersneppe","da":"Stor Kobbersneppe","en":"Black-tailed Godwit","latin":"Limosa limosa","img":"thumbs/330px-Black-tailed_Godwit_Uferschnepfe.jpg","o":72,"od":139},{"id":"Enkeltbekkasin","da":"Enkeltbekkasin","en":"Jack Snipe","latin":"Lymnocryptes minimus","img":"thumbs/330px-Lymnocryptes_minimus_%28Marek_Szczepanek%29.jpg","o":73,"od":142},{"id":"Skovsneppe","da":"Skovsneppe","en":"Eurasian Woodcock","latin":"Scolopax rusticola","img":"thumbs/330px-Woodcock_earthworm.jpg","o":74,"od":143},{"id":"Tredækker","da":"Tredækker","en":"Great Snipe","latin":"Gallinago media","img":"thumbs/330px-Greatsnipe_1000.jpg","o":75,"od":144},{"id":"Dobbeltbekkasin","da":"Dobbeltbekkasin","en":"Common Snipe","latin":"Gallinago gallinago","img":"thumbs/330px-Gallinago_gallinago_a1.JPG","o":76,"od":145},{"id":"Mudderklire","da":"Mudderklire","en":"Common Sandpiper","latin":"Actitis hypoleucos","img":"thumbs/330px-Actitis_hypoleucos_-_Laem_Pak_Bia.jpg","o":77,"od":147},{"id":"Plettet Mudderklire","da":"Plettet Mudderklire","en":"Spotted Sandpiper","latin":"Actitis macularius","img":"thumbs/330px-Actitis-macularia-005.jpg","o":78,"od":148},{"id":"Odinshane","da":"Odinshane","en":"Red-necked Phalarope","latin":"Phalaropus lobatus","img":"thumbs/330px-Red-necked_Phalarope.jpg","o":79,"od":151},{"id":"Svaleklire","da":"Svaleklire","en":"Green Sandpiper","latin":"Tringa ochropus","img":"thumbs/330px-Green_sandpiper_%28Tringa_ochropus%29.jpg","o":80,"od":152},{"id":"Tinksmed","da":"Tinksmed","en":"Wood Sandpiper","latin":"Tringa glareola","img":"thumbs/330px-Wood_Sandpiper_Safari_Park.jpg","o":81,"od":154},{"id":"Rødben","da":"Rødben","en":"Common Redshank","latin":"Tringa totanus","img":"thumbs/330px-Common_Redshank_Tringa_totanus.jpg","o":82,"od":155},{"id":"Sortklire","da":"Sortklire","en":"Spotted Redshank","latin":"Tringa erythropus","img":"thumbs/330px-Tringa_erythropus_-_Laem_Pak_Bia.jpg","o":83,"od":157},{"id":"Hvidklire","da":"Hvidklire","en":"Common Greenshank","latin":"Tringa nebularia","img":"thumbs/330px-Greenshank_%28Tringa_nebularia%29.jpg","o":84,"od":158},{"id":"Stenvender","da":"Stenvender","en":"Ruddy Turnstone","latin":"Arenaria interpres","img":"thumbs/330px-Arenaria_interpres_%28habitus%29.jpg","o":85,"od":160},{"id":"Islandsk Ryle","da":"Islandsk Ryle","en":"Red Knot","latin":"Calidris canutus","img":"thumbs/330px-Red-Knot-for-Wiki.jpg","o":86,"od":161},{"id":"Brushane","da":"Brushane","en":"Ruff","latin":"Calidris pugnax","img":"thumbs/330px-Philomachus_pugnax_-Diergaarde_Blijdorp-8c.jpg","o":87,"od":162},{"id":"Kærløber","da":"Kærløber","en":"Broad-billed Sandpiper","latin":"Calidris falcinellus","img":"thumbs/330px-Broad_billed_sandpiper_by_Sreedev_Puthur.jpg","o":88,"od":164},{"id":"Krumnæbbet Ryle","da":"Krumnæbbet Ryle","en":"Curlew Sandpiper","latin":"Calidris ferruginea","img":"thumbs/330px-Calidris_ferruginea%2C_winter_adult%2C_Pak_Thale.jpg","o":89,"od":165},{"id":"Temmincksryle","da":"Temmincksryle","en":"Temminck's Stint","latin":"Calidris temminckii","img":"thumbs/330px-Temmincks_Stint.jpg","o":90,"od":168},{"id":"Almindelig Ryle","da":"Almindelig Ryle","en":"Dunlin","latin":"Calidris alpina","img":"thumbs/330px-DunlinEastPoint.png","o":91,"od":171},{"id":"Dværgryle","da":"Dværgryle","en":"Little Stint","latin":"Calidris minuta","img":"thumbs/330px-Little_Stint_%28Calidris_minuta%29_2.jpg","o":92,"od":176},{"id":"Almindelig Kjove","da":"Almindelig Kjove","en":"Parasitic Jaeger","latin":"Stercorarius parasiticus","img":"thumbs/330px-Arctic_Skua_1.jpg","o":93,"od":182},{"id":"Storkjove","da":"Storkjove","en":"Great Skua","latin":"Stercorarius skua","img":"thumbs/330px-Stercorarius_skua_-Iceland-8.jpg","o":94,"od":185},{"id":"Søkonge","da":"Søkonge","en":"Little Auk","latin":"Alle alle","img":"thumbs/330px-AlleAlle_2.jpg","o":95,"od":189},{"id":"Dværgterne","da":"Dværgterne","en":"Little Tern","latin":"Sternula albifrons","img":"thumbs/330px-Sternula_albifrons_2_-_Little_Swanport.jpg","o":96,"od":193},{"id":"Rovterne","da":"Rovterne","en":"Caspian Tern","latin":"Hydroprogne caspia","img":"thumbs/330px-Sterna-caspia-010.jpg","o":97,"od":194},{"id":"Hvidvinget Terne","da":"Hvidvinget Terne","en":"White-winged Tern","latin":"Chlidonias leucopterus","img":"thumbs/330px-Chlidonias_leucopterus_Mai_Po.jpg","o":98,"od":197},{"id":"Sortterne","da":"Sortterne","en":"Black Tern","latin":"Chlidonias niger","img":"thumbs/330px-%C4%8Cor%C3%ADk_%C4%8Dierny_%28Chlidonias_niger%29_a_%284644831482%29.jpg","o":99,"od":198},{"id":"Splitterne","da":"Splitterne","en":"Sandwich Tern","latin":"Thalasseus sandvicensis","img":"thumbs/330px-2021-07-10_Thalasseus_sandvicensis%2C_St_Marys_Island%2C_Northumberland_01.jpg","o":100,"od":199},{"id":"Havterne","da":"Havterne","en":"Arctic Tern","latin":"Sterna paradisaea","img":"thumbs/330px-2009_07_02_-_Arctic_tern_on_Farne_Islands_-_The_blue_rope_demarcates_the_visitors%27_path.JPG","o":101,"od":201},{"id":"Fjordterne","da":"Fjordterne","en":"Common Tern","latin":"Sterna hirundo","img":"thumbs/330px-Common_tern_with_fish.jpg","o":102,"od":202},{"id":"Dværgmåge","da":"Dværgmåge","en":"Little Gull","latin":"Hydrocoloeus minutus","img":"thumbs/330px-%C4%8Cajka_mal%C3%A1_%28Larus_minutus%29_a_%284834254958%29.jpg","o":103,"od":204},{"id":"Hættemåge","da":"Hættemåge","en":"Black-headed Gull","latin":"Chroicocephalus ridibundus","img":"thumbs/330px-Chroicocephalus_ridibundus_%28summer%29.jpg","o":104,"od":211},{"id":"Sorthovedet Måge","da":"Sorthovedet Måge","en":"Mediterranean Gull","latin":"Ichthyaetus melanocephalus","img":"thumbs/330px-Larus_melanocephalus_aka_Mediterranean_Gull_rare_guest_in_Sweden2.jpg","o":105,"od":216},{"id":"Stormmåge","da":"Stormmåge","en":"Common Gull","latin":"Larus canus","img":"thumbs/330px-Common_gull_%28Larus_canus%29_adult_breeding_Oppdal.jpg","o":106,"od":218},{"id":"Kaspisk Måge","da":"Kaspisk Måge","en":"Caspian Gull","latin":"Larus cachinnans","img":"thumbs/330px-Caspian_gull_%28Larus_cachinnans%29_summer_Danube_delta.jpg","o":107,"od":219},{"id":"Sølvmåge","da":"Sølvmåge","en":"European Herring Gull","latin":"Larus argentatus","img":"thumbs/330px-Larus_argentatus01.jpg","o":108,"od":220},{"id":"Middelhavssølvmåge","da":"Middelhavssølvmåge","en":"Yellow-legged Gull","latin":"Larus michahellis","img":"thumbs/330px-Yellow-legged_seagull_%C4%B0stanbul_turkey_may_2023.jpg","o":109,"od":221},{"id":"Svartbag","da":"Svartbag","en":"Great Black-backed Gull","latin":"Larus marinus","img":"thumbs/330px-Great_Black-backed_Gull_Larus_marinus.jpg","o":110,"od":223},{"id":"Sildemåge","da":"Sildemåge","en":"Lesser Black-backed Gull","latin":"Larus fuscus","img":"thumbs/330px-Larus-fuscus-taxbox.jpg","o":111,"od":225},{"id":"Hvidvinget Måge","da":"Hvidvinget Måge","en":"Iceland Gull","latin":"Larus glaucoides","img":"thumbs/330px-Larus_glaucoides_IthacaNY.jpg","o":112,"od":227},{"id":"Rødstrubet Lom","da":"Rødstrubet Lom","en":"Red-throated Loon","latin":"Gavia stellata","img":"thumbs/330px-Gavia_Stellata_%C3%96lfus%C3%A1_20090606.jpg","o":113,"od":228},{"id":"Hvid Stork","da":"Hvid Stork","en":"White Stork","latin":"Ciconia ciconia","img":"thumbs/330px-White_stork_%28Ciconia_ciconia%29_Bia%C5%82owieza.jpg","o":114,"od":246},{"id":"Sule","da":"Sule","en":"Northern Gannet","latin":"Morus bassanus","img":"thumbs/330px-Morus_bassanus_adu.jpg","o":115,"od":248},{"id":"Skarv","da":"Skarv","en":"Great Cormorant","latin":"Phalacrocorax carbo","img":"thumbs/330px-Phalacrocorax_carbo_Vic.jpg","o":116,"od":252},{"id":"Sort Ibis","da":"Sort Ibis","en":"Glossy Ibis","latin":"Plegadis falcinellus","img":"thumbs/330px-Glossy_Ibis_-_Fogg_Dam_Conservation_Reserve.jpg","o":117,"od":253},{"id":"Skestork","da":"Skestork","en":"Eurasian Spoonbill","latin":"Platalea leucorodia","img":"thumbs/330px-Eurasian_Spoonbill-2.jpg","o":118,"od":256},{"id":"Rørdrum","da":"Rørdrum","en":"Eurasian Bittern","latin":"Botaurus stellaris","img":"thumbs/330px-Eurasian_Bittern_-_Torrile_-_Italy_4528_%2815409347121%29.jpg","o":119,"od":261},{"id":"Silkehejre","da":"Silkehejre","en":"Little Egret","latin":"Egretta garzetta","img":"thumbs/330px-Little_egret_%28Egretta_garzetta%29_Photograph_by_Shantanu_Kuveskar.jpg","o":120,"od":264},{"id":"Sølvhejre","da":"Sølvhejre","en":"Great Egret","latin":"Ardea alba","img":"thumbs/330px-Great_Egret_Breeding_Plumage.png","o":121,"od":267},{"id":"Fiskehejre","da":"Fiskehejre","en":"Grey Heron","latin":"Ardea cinerea","img":"thumbs/330px-Graureiher_Grey_Heron.jpg","o":122,"od":270},{"id":"Mursejler","da":"Mursejler","en":"Common Swift","latin":"Apus apus","img":"thumbs/330px-Apus_apus_-Barcelona%2C_Spain-8_%281%29.jpg","o":123,"od":278},{"id":"Mosehornugle","da":"Mosehornugle","en":"Short-eared Owl","latin":"Asio flammeus","img":"thumbs/330px-Short_Eared_Owl_on_the_Ground.jpg","o":124,"od":286},{"id":"Skovhornugle","da":"Skovhornugle","en":"Long-eared Owl","latin":"Asio otus","img":"thumbs/330px-Long-eared_Owl_-_Kisjuszallas_-_Hungary_S4E0920_%2815671750198%29.jpg","o":125,"od":287},{"id":"Natugle","da":"Natugle","en":"Tawny Owl","latin":"Strix aluco","img":"thumbs/330px-Strix_aluco_3_%28Martin_Mecnarowski%29.jpg","o":126,"od":290},{"id":"Fiskeørn","da":"Fiskeørn","en":"Western Osprey","latin":"Pandion haliaetus","img":"thumbs/330px-Osprey_on_nest.jpg","o":127,"od":292},{"id":"Hvepsevåge","da":"Hvepsevåge","en":"European Honey Buzzard","latin":"Pernis apivorus","img":"thumbs/330px-Wespenbussard_European_honey_buzzard_Pernis_apivorus%2C_crop.jpg","o":128,"od":296},{"id":"Kongeørn","da":"Kongeørn","en":"Golden Eagle","latin":"Aquila chrysaetos","img":"thumbs/330px-%D0%91%D0%B5%D1%80%D0%BA%D1%83%D1%82_%28Aquila_chrysaetos%29.jpg","o":129,"od":307},{"id":"Spurvehøg","da":"Spurvehøg","en":"Eurasian Sparrowhawk","latin":"Accipiter nisus","img":"thumbs/330px-Sperber_%28Accipiter_nisus%29_male_-20200308_%281%29.JPG","o":130,"od":309},{"id":"Duehøg","da":"Duehøg","en":"Northern Goshawk","latin":"Astur gentilis","img":"thumbs/330px-Northern_Goshawk_ad_M2.jpg","o":131,"od":310},{"id":"Steppehøg","da":"Steppehøg","en":"Pallid Harrier","latin":"Circus macrourus","img":"thumbs/330px-Circus_macrourus.jpg","o":132,"od":311},{"id":"Blå Kærhøg","da":"Blå Kærhøg","en":"Hen Harrier","latin":"Circus cyaneus","img":"thumbs/330px-Circus_cyaneus%2C_Ballaugh_Curragh%2C_Isle_of_Man_1.jpg","o":133,"od":312},{"id":"Rørhøg","da":"Rørhøg","en":"Western Marsh Harrier","latin":"Circus aeruginosus","img":"thumbs/330px-Western_Marsh_Harrier-_Bangalore%2C_India.jpg","o":134,"od":315},{"id":"Rød Glente","da":"Rød Glente","en":"Red Kite","latin":"Milvus milvus","img":"thumbs/330px-Milvus_milvus_R%28ThKraft%29.jpg","o":135,"od":316},{"id":"Sort Glente","da":"Sort Glente","en":"Black Kite","latin":"Milvus migrans","img":"thumbs/330px-Schwarzmilan.jpg","o":136,"od":317},{"id":"Havørn","da":"Havørn","en":"White-tailed Eagle","latin":"Haliaeetus albicilla","img":"thumbs/330px-White_tailed_eagle_raftsund_square_crop.jpg","o":137,"od":319},{"id":"Fjeldvåge","da":"Fjeldvåge","en":"Rough-legged Buzzard","latin":"Buteo lagopus","img":"thumbs/330px-Buteo_lagopus_29283.JPG","o":138,"od":321},{"id":"Musvåge","da":"Musvåge","en":"Common Buzzard","latin":"Buteo buteo","img":"thumbs/330px-Steppe_buzzard_%28Buteo_buteo_vulpinus%29.jpg","o":139,"od":322},{"id":"Isfugl","da":"Isfugl","en":"Common Kingfisher","latin":"Alcedo atthis","img":"thumbs/330px-%E2%99%82_Common_Kingfisher_%28Alcedo_atthis%29_Photograph_By_Shantanu_Kuveskar%2C_Mangaon%2C_Maharashtra%2C_India.jpg","o":140,"od":328},{"id":"Vendehals","da":"Vendehals","en":"Eurasian Wryneck","latin":"Jynx torquilla","img":"thumbs/330px-Northern_wryneck_by_David_Raju_%28cropped%29.jpg","o":141,"od":329},{"id":"Grønspætte","da":"Grønspætte","en":"European Green Woodpecker","latin":"Picus viridis","img":"thumbs/330px-European_green_woodpecker_%28Picus_viridis%29_female_Barnes.jpg","o":142,"od":330},{"id":"Sortspætte","da":"Sortspætte","en":"Black Woodpecker","latin":"Dryocopus martius","img":"thumbs/330px-%D0%96%D0%B5%D0%BB%D0%BD%D0%B0_%28Dryocopus_martius%2C_fem%29%2C_%C2%AB%D0%93%D0%BE%D1%80%D0%BE%D0%B4%D1%81%D0%BA%D0%B0%D1%8F_%D1%88%D1%83%D0%BC%D0%B0%D1%88%D0%B5%D1%88%D0%B0%D1%8F%C2%BB.jpg","o":143,"od":331},{"id":"Stor Flagspætte","da":"Stor Flagspætte","en":"Great Spotted Woodpecker","latin":"Dendrocopos major","img":"thumbs/330px-Greater_Spotted_Woodpecker_%2841554059345%29.jpg","o":144,"od":335},{"id":"Tårnfalk","da":"Tårnfalk","en":"Common Kestrel","latin":"Falco tinnunculus","img":"thumbs/330px-Common_kestrel_falco_tinnunculus.jpg","o":145,"od":338},{"id":"Dværgfalk","da":"Dværgfalk","en":"Merlin","latin":"Falco columbarius","img":"thumbs/330px-Merlin_prey_fencepost_Cochrane_cropped.jpg","o":146,"od":341},{"id":"Lærkefalk","da":"Lærkefalk","en":"Eurasian Hobby","latin":"Falco subbuteo","img":"thumbs/330px-Eurasian_hobby_%28Falco_subbuteo%29_by_Shantanu_Kuveskar.jpg","o":147,"od":343},{"id":"Vandrefalk","da":"Vandrefalk","en":"Peregrine Falcon","latin":"Falco peregrinus","img":"thumbs/330px-Falco_peregrinus_m_Humber_Bay_Park_Toronto.jpg","o":148,"od":344},{"id":"Jagtfalk","da":"Jagtfalk","en":"Gyrfalcon","latin":"Falco rusticolus","img":"thumbs/330px-Falco_rusticolus_white_cropped.jpg","o":149,"od":346},{"id":"Slagfalk","da":"Slagfalk","en":"Saker Falcon","latin":"Falco cherrug","img":"thumbs/330px-Falco_cherrug_%28Marek_Szczepanek%29.jpg","o":150,"od":347},{"id":"Stor Tornskade","da":"Stor Tornskade","en":"Great Grey Shrike","latin":"Lanius excubitor","img":"thumbs/330px-Lanius_excubitor_1_%28Marek_Szczepanek%29.jpg","o":151,"od":356},{"id":"Rødrygget Tornskade","da":"Rødrygget Tornskade","en":"Red-backed Shrike","latin":"Lanius collurio","img":"thumbs/330px-Red-backed_shrike.jpg","o":152,"od":359},{"id":"Skovskade","da":"Skovskade","en":"Eurasian Jay","latin":"Garrulus glandarius","img":"thumbs/330px-Garrulus_glandarius_1_Luc_Viatour.jpg","o":153,"od":364},{"id":"Husskade","da":"Husskade","en":"Eurasian Magpie","latin":"Pica pica","img":"thumbs/330px-%D0%A1%D0%BE%D1%80%D0%BE%D0%BA%D0%B0_%28Pica_pica%29%2C_%D0%9A%D0%B0%D0%BB%D0%B8%D0%BD%D0%B8%D0%BD%D0%B3%D1%80%D0%B0%D0%B4.jpg","o":154,"od":365},{"id":"Allike","da":"Allike","en":"Western Jackdaw","latin":"Coloeus monedula","img":"thumbs/330px-Coloeus_monedula_-Ham_Common%2C_London_Borough_of_Richmond_upon_Thames%2C_England-8.jpg","o":155,"od":368},{"id":"Råge","da":"Råge","en":"Rook","latin":"Corvus frugilegus","img":"thumbs/330px-Rook_at_Slimbridge_Wetland_Centre%2C_Gloucestershire%2C_England_22May2019_arp.jpg","o":156,"od":369},{"id":"Ravn","da":"Ravn","en":"Northern Raven","latin":"Corvus corax","img":"thumbs/330px-Corvus_corax.001_-_Tower_of_London.JPG","o":157,"od":371},{"id":"Krage","da":"Krage","en":"Carrion Crow","latin":"Corvus corone","img":"thumbs/330px-Corvus_corone_-near_Canford_Cliffs%2C_Poole%2C_England-8.jpg","o":158,"od":372},{"id":"Pungmejse","da":"Pungmejse","en":"Eurasian Penduline Tit","latin":"Remiz pendulinus","img":"thumbs/330px-Remiz_pendulinus_3_%28Martin_Mecnarowski%29.jpg","o":159,"od":373},{"id":"Blåmejse","da":"Blåmejse","en":"Eurasian Blue Tit","latin":"Cyanistes caeruleus","img":"thumbs/330px-Eurasian_blue_tit_Lancashire.jpg","o":160,"od":374},{"id":"Musvit","da":"Musvit","en":"Great Tit","latin":"Parus major","img":"thumbs/330px-Great_tit_side-on.jpg","o":161,"od":375},{"id":"Sortmejse","da":"Sortmejse","en":"Coal Tit","latin":"Periparus ater","img":"thumbs/330px-Coal_tit_UK09.JPG","o":162,"od":376},{"id":"Topmejse","da":"Topmejse","en":"European Crested Tit","latin":"Lophophanes cristatus","img":"thumbs/330px-Lophophanes_cristatus_-_01.jpg","o":163,"od":377},{"id":"Sumpmejse","da":"Sumpmejse","en":"Marsh Tit","latin":"Poecile palustris","img":"thumbs/330px-Parus_palustris02.jpg","o":164,"od":378},{"id":"Skægmejse","da":"Skægmejse","en":"Bearded Reedling","latin":"Panurus biarmicus","img":"thumbs/330px-Baardman_-_Panurus_biarmicus_%2815147085070%29.jpg","o":165,"od":380},{"id":"Hedelærke","da":"Hedelærke","en":"Woodlark","latin":"Lullula arborea","img":"thumbs/330px-Lullula_arborea_%28J%C3%A1n_Svetl%C3%ADk%29.jpg","o":166,"od":381},{"id":"Sanglærke","da":"Sanglærke","en":"Eurasian Skylark","latin":"Alauda arvensis","img":"thumbs/330px-Alauda_arvensis_2.jpg","o":167,"od":382},{"id":"Gulbug","da":"Gulbug","en":"Icterine Warbler","latin":"Hippolais icterina","img":"thumbs/330px-Icterine_warbler_18_06_2022_004_crop.png","o":168,"od":388},{"id":"Sivsanger","da":"Sivsanger","en":"Sedge Warbler","latin":"Acrocephalus schoenobaenus","img":"thumbs/330px-Sedge_warbler_%28Acrocephalus_schoenobaenus%29_3.jpg","o":169,"od":392},{"id":"Kærsanger","da":"Kærsanger","en":"Marsh Warbler","latin":"Acrocephalus palustris","img":"thumbs/Acrocephalus_palustris_%28Marek_Szczepanek%29b.jpg","o":170,"od":396},{"id":"Rørsanger","da":"Rørsanger","en":"Eurasian Reed Warbler","latin":"Acrocephalus scirpaceus","img":"thumbs/330px-Acrocephalus_scirpaceus_Vlaskop_cropped.jpg","o":171,"od":397},{"id":"Drosselrørsanger","da":"Drosselrørsanger","en":"Great Reed Warbler","latin":"Acrocephalus arundinaceus","img":"thumbs/330px-Drosselrohrs%C3%A4nger_Great_reed_warbler.jpg","o":172,"od":398},{"id":"Græshoppesanger","da":"Græshoppesanger","en":"Common Grasshopper Warbler","latin":"Locustella naevia","img":"thumbs/330px-Grashoppsangare-070512.jpg","o":173,"od":403},{"id":"Digesvale","da":"Digesvale","en":"Sand Martin","latin":"Riparia riparia","img":"thumbs/330px-Riparia_riparia_-Markinch%2C_Fife%2C_Scotland_-flying-8-4c.jpg","o":174,"od":404},{"id":"Landsvale","da":"Landsvale","en":"Barn Swallow","latin":"Hirundo rustica","img":"thumbs/330px-%D0%94%D0%B5%D1%80%D0%B5%D0%B2%D0%B5%D0%BD%D1%81%D0%BA%D0%B0%D1%8F_%D0%BB%D0%B0%D1%81%D1%82%D0%BE%D1%87%D0%BA%D0%B0_%28Hirundo_rustica%29%2C_%D0%9C%D0%B5%D0%BB%D0%B8%D1%85%D0%BE%D0%B2%D0%BE.jpg","o":175,"od":406},{"id":"Bysvale","da":"Bysvale","en":"Common House Martin","latin":"Delichon urbicum","img":"thumbs/330px-Mehlschwalbe_Delichon_urbicum.jpg","o":176,"od":407},{"id":"Rødrygget Svale","da":"Rødrygget Svale","en":"Red-rumped Swallow","latin":"Cecropis rufula","img":"thumbs/330px-Red-rumped_Swallow_%28Cecropis_daurica%29_Photograph_by_Shantanu_Kuveskar.jpg","o":177,"od":409},{"id":"Halemejse","da":"Halemejse","en":"Long-tailed Tit","latin":"Aegithalos caudatus","img":"thumbs/330px-Aegithalos_caudatus_side-on.jpg","o":178,"od":411},{"id":"Skovsanger","da":"Skovsanger","en":"Wood Warbler","latin":"Phylloscopus sibilatrix","img":"thumbs/330px-Flickr_-_Rainbirder_-_Wood_Warbler_%28Phylloscopus_sibilatrix%29.jpg","o":179,"od":413},{"id":"Løvsanger","da":"Løvsanger","en":"Willow Warbler","latin":"Phylloscopus trochilus","img":"thumbs/330px-Willow_Warbler_Phylloscopus_trochilus.jpg","o":180,"od":421},{"id":"Gransanger","da":"Gransanger","en":"Common Chiffchaff","latin":"Phylloscopus collybita","img":"thumbs/330px-Chiffchaff_-_Phylloscopus_collybita.jpg","o":181,"od":423},{"id":"Havesanger","da":"Havesanger","en":"Garden Warbler","latin":"Sylvia borin","img":"thumbs/330px-Sylvia_borin_%28%C3%96rebro_County%29.jpg","o":182,"od":428},{"id":"Munk","da":"Munk","en":"Eurasian Blackcap","latin":"Sylvia atricapilla","img":"thumbs/330px-Blackcap_%28Sylvia_atricapilla%29_male.jpg","o":183,"od":429},{"id":"Gærdesanger","da":"Gærdesanger","en":"Lesser Whitethroat","latin":"Curruca curruca","img":"thumbs/330px-Sylvia_curruca_1_%28Martin_Mecnarowski%29.jpg","o":184,"od":431},{"id":"Tornsanger","da":"Tornsanger","en":"Common Whitethroat","latin":"Curruca communis","img":"thumbs/330px-Common_Whitethroat.jpg","o":185,"od":433},{"id":"Silkehale","da":"Silkehale","en":"Bohemian Waxwing","latin":"Bombycilla garrulus","img":"thumbs/330px-Bombycilla_garrulusII.jpg","o":186,"od":441},{"id":"Rødtoppet Fuglekonge","da":"Rødtoppet Fuglekonge","en":"Common Firecrest","latin":"Regulus ignicapilla","img":"thumbs/330px-Common_firecrest_Franconville_03.jpg","o":187,"od":442},{"id":"Fuglekonge","da":"Fuglekonge","en":"Goldcrest","latin":"Regulus regulus","img":"thumbs/330px-Goldcrest_1.jpg","o":188,"od":443},{"id":"Spætmejse","da":"Spætmejse","en":"Eurasian Nuthatch","latin":"Sitta europaea","img":"thumbs/330px-Kleiber_Sitta_europaea-0447.jpg","o":189,"od":444},{"id":"Træløber","da":"Træløber","en":"Eurasian Treecreeper","latin":"Certhia familiaris","img":"thumbs/330px-Eurasian_Treecreeper_in_the_snow%2C_cropped_version.jpg","o":190,"od":445},{"id":"Gærdesmutte","da":"Gærdesmutte","en":"Eurasian Wren","latin":"Nannus troglodytes","img":"thumbs/330px-Ein_neugieriger_Zaunk%C3%B6nig.jpg","o":191,"od":447},{"id":"Stær","da":"Stær","en":"Common Starling","latin":"Sturnus vulgaris","img":"thumbs/330px-Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_3.jpg","o":192,"od":450},{"id":"Vandstær","da":"Vandstær","en":"White-throated Dipper","latin":"Cinclus cinclus","img":"thumbs/330px-Cinclus_cinclus_-Kirkcudbright%2C_Scotland-8.jpg","o":193,"od":453},{"id":"Misteldrossel","da":"Misteldrossel","en":"Mistle Thrush","latin":"Turdus viscivorus","img":"thumbs/330px-Turdus_viscivorus_in_Baikonur-town_001.jpg","o":194,"od":457},{"id":"Sangdrossel","da":"Sangdrossel","en":"Song Thrush","latin":"Turdus philomelos","img":"thumbs/330px-Song_Thrush_Turdus_philomelos.jpg","o":195,"od":458},{"id":"Vindrossel","da":"Vindrossel","en":"Redwing","latin":"Turdus iliacus","img":"thumbs/330px-Redwing_Turdus_iliacus.jpg","o":196,"od":459},{"id":"Solsort","da":"Solsort","en":"Common Blackbird","latin":"Turdus merula","img":"thumbs/330px-Common_Blackbird.jpg","o":197,"od":460},{"id":"Sjagger","da":"Sjagger","en":"Fieldfare","latin":"Turdus pilaris","img":"thumbs/330px-Fieldfare_on_branch.jpg","o":198,"od":461},{"id":"Ringdrossel","da":"Ringdrossel","en":"Ring Ouzel","latin":"Turdus torquatus","img":"thumbs/330px-Turdus_torquatus%2C_Spain_1.jpg","o":199,"od":462},{"id":"Grå Fluesnapper","da":"Grå Fluesnapper","en":"Spotted Flycatcher","latin":"Muscicapa striata","img":"thumbs/330px-Muscicapa_striata_1_%28Martin_Mecnarowski%29.jpg","o":200,"od":468},{"id":"Rødhals","da":"Rødhals","en":"European Robin","latin":"Erithacus rubecula","img":"thumbs/330px-Erithacus_rubecula_with_cocked_head.jpg","o":201,"od":469},{"id":"Nattergal","da":"Nattergal","en":"Thrush Nightingale","latin":"Luscinia luscinia","img":"thumbs/330px-Nightingale_of_ancient_Uglich.JPG","o":202,"od":470},{"id":"Blåhals","da":"Blåhals","en":"Bluethroat","latin":"Luscinia svecica","img":"thumbs/330px-Bluethroat_%28Luscinia_svecica_svecica%29_male_Oppdal.jpg","o":203,"od":472},{"id":"Broget Fluesnapper","da":"Broget Fluesnapper","en":"European Pied Flycatcher","latin":"Ficedula hypoleuca","img":"thumbs/330px-Ficedula_hypoleuca_-Wood_of_Cree_Nature_Reserve%2C_Scotland_-male-8a.jpg","o":204,"od":478},{"id":"Husrødstjert","da":"Husrødstjert","en":"Black Redstart","latin":"Phoenicurus ochruros","img":"thumbs/330px-Hausrotschwanz_Brutpflege_2006-05-21-05.jpg","o":205,"od":480},{"id":"Rødstjert","da":"Rødstjert","en":"Common Redstart","latin":"Phoenicurus phoenicurus","img":"thumbs/330px-Gartenrotschwanz_1.jpg","o":206,"od":481},{"id":"Bynkefugl","da":"Bynkefugl","en":"Whinchat","latin":"Saxicola rubetra","img":"thumbs/330px-Saxicola_rubetra_-Belgium_-male-8.jpg","o":207,"od":483},{"id":"Sortstrubet Bynkefugl","da":"Sortstrubet Bynkefugl","en":"European Stonechat","latin":"Saxicola rubicola","img":"thumbs/330px-Stonechat_%28Saxicola_rubicola%29_male%2C_Beaulieu%2C_Hampshire.jpg","o":208,"od":485},{"id":"Stenpikker","da":"Stenpikker","en":"Northern Wheatear","latin":"Oenanthe oenanthe","img":"thumbs/330px-Steinschmaetzer_Northern_wheatear_male.jpg","o":209,"od":490},{"id":"Jernspurv","da":"Jernspurv","en":"Dunnock","latin":"Prunella modularis","img":"thumbs/330px-Dunnock_%28Prunella_modularis%29_3.jpg","o":210,"od":495},{"id":"Skovspurv","da":"Skovspurv","en":"Eurasian Tree Sparrow","latin":"Passer montanus","img":"thumbs/330px-Tree_Sparrow_August_2007_Osaka_Japan.jpg","o":211,"od":498},{"id":"Gråspurv","da":"Gråspurv","en":"House Sparrow","latin":"Passer domesticus","img":"thumbs/330px-House_sparrow_male_in_Prospect_Park_%2853532%29.jpg","o":212,"od":500},{"id":"Bjergvipstjert","da":"Bjergvipstjert","en":"Grey Wagtail","latin":"Motacilla cinerea","img":"thumbs/330px-Grey_wagtail_by_Gunjan_Pandey.jpg","o":213,"od":501},{"id":"Gul Vipstjert","da":"Gul Vipstjert","en":"Western Yellow Wagtail","latin":"Motacilla flava","img":"thumbs/330px-Wiesenschafstelze.JPG","o":214,"od":502},{"id":"Hvid Vipstjert","da":"Hvid Vipstjert","en":"White Wagtail","latin":"Motacilla alba","img":"thumbs/330px-White_wagtail_female_first_summer.jpg","o":215,"od":505},{"id":"Skovpiber","da":"Skovpiber","en":"Tree Pipit","latin":"Anthus trivialis","img":"thumbs/330px-Anthus_triviallis_%28Marek_Szczepanek%29.jpg","o":216,"od":509},{"id":"Rødstrubet Piber","da":"Rødstrubet Piber","en":"Red-throated Pipit","latin":"Anthus cervinus","img":"thumbs/330px-Red-throated_Pipit.jpg","o":217,"od":511},{"id":"Engpiber","da":"Engpiber","en":"Meadow Pipit","latin":"Anthus pratensis","img":"thumbs/330px-Wiesenpieper_Meadow_pipit.jpg","o":218,"od":512},{"id":"Skærpiber","da":"Skærpiber","en":"European Rock Pipit","latin":"Anthus petrosus","img":"thumbs/330px-Eurasian_Rock_Pipit%2C_Helgoland_1.jpg","o":219,"od":513},{"id":"Bjergpiber","da":"Bjergpiber","en":"Water Pipit","latin":"Anthus spinoletta","img":"thumbs/330px-Anthus_spinoletta_-_Water_Pipit%2C_Kahramanmara%C5%9F_2016-11-18_01-10.jpg","o":220,"od":514},{"id":"Kvækerfinke","da":"Kvækerfinke","en":"Brambling","latin":"Fringilla montifringilla","img":"thumbs/330px-Fringilla_montifringilla_-Poland_-male-8.jpg","o":221,"od":515},{"id":"Bogfinke","da":"Bogfinke","en":"Common Chaffinch","latin":"Fringilla coelebs","img":"thumbs/330px-Chaffinch_%28Fringilla_coelebs%29.jpg","o":222,"od":516},{"id":"Kernebider","da":"Kernebider","en":"Hawfinch","latin":"Coccothraustes coccothraustes","img":"thumbs/330px-Coccothraustes_coccothraustes_Parco_Della_Piana_around_Firenze%2C_Italy.jpg","o":223,"od":517},{"id":"Dompap","da":"Dompap","en":"Eurasian Bullfinch","latin":"Pyrrhula pyrrhula","img":"thumbs/330px-Bullfinch_male.jpg","o":224,"od":522},{"id":"Grønirisk","da":"Grønirisk","en":"European Greenfinch","latin":"Chloris chloris","img":"thumbs/330px-Carduelis_chloris_3_%28Marek_Szczepanek%29.jpg","o":225,"od":525},{"id":"Bjergirisk","da":"Bjergirisk","en":"Twite","latin":"Linaria flavirostris","img":"thumbs/330px-Twite_%28Carduelis_flavirostris%29_-_geograph.org.uk_-_676590.jpg","o":226,"od":527},{"id":"Tornirisk","da":"Tornirisk","en":"Common Linnet","latin":"Linaria cannabina","img":"thumbs/330px-Carduelis_cannabina_-England_-male-8.jpg","o":227,"od":528},{"id":"Gråsisken","da":"Gråsisken","en":"Common Redpoll","latin":"Acanthis flammea","img":"thumbs/330px-Carduelis_flammea_CT6.jpg","o":228,"od":529},{"id":"Lille Korsnæb","da":"Lille Korsnæb","en":"Red Crossbill","latin":"Loxia curvirostra","img":"thumbs/330px-Red_Crossbills_%28Male%29.jpg","o":229,"od":532},{"id":"Stillits","da":"Stillits","en":"European Goldfinch","latin":"Carduelis carduelis","img":"thumbs/330px-Carduelis_carduelis_close_up.jpg","o":230,"od":533},{"id":"Kanariefugl","da":"Kanariefugl","en":"Atlantic Canary","latin":"Serinus canaria","img":"thumbs/330px-Serinus_canaria_-Parque_Rural_del_Nublo%2C_Gran_Canaria%2C_Spain_-male-8a.jpg","o":231,"od":534,"esc":1},{"id":"Grønsisken","da":"Grønsisken","en":"Eurasian Siskin","latin":"Spinus spinus","img":"thumbs/330px-Carduelis_spinus_male.jpg","o":232,"od":536},{"id":"Snespurv","da":"Snespurv","en":"Snow Bunting","latin":"Plectrophenax nivalis","img":"thumbs/330px-Snow_Bunting_%28Plectrophenax_nivalis%29%2C_Thule%2C_Greenland_1.jpg","o":233,"od":537},{"id":"Lapværling","da":"Lapværling","en":"Lapland Longspur","latin":"Calcarius lapponicus","img":"thumbs/330px-Lapland_Longspur_-_Calcarius_lapponicus_-_Sportittlingur_1.jpg","o":234,"od":538},{"id":"Rørspurv","da":"Rørspurv","en":"Common Reed Bunting","latin":"Schoeniclus schoeniclus","img":"thumbs/330px-Common_reed_bunting_%28emberiza_schoeniclus%29_m.jpg","o":235,"od":539},{"id":"Bomlærke","da":"Bomlærke","en":"Corn Bunting","latin":"Emberiza calandra","img":"thumbs/330px-Corn_bunting_-_Emberiza_calandra_07.jpg","o":236,"od":546},{"id":"Gulspurv","da":"Gulspurv","en":"Yellowhammer","latin":"Emberiza citrinella","img":"thumbs/330px-Goldammer_Emberiza_citrinella.jpg","o":237,"od":553},{"id":"Hvidhovedet And","da":"Hvidhovedet And","en":"White-headed Duck","latin":"Oxyura leucocephala","img":"thumbs/330px-Whiteheadduck.jpg","o":null,"od":0},{"id":"Amerikansk Skarveand","da":"Amerikansk Skarveand","en":"Ruddy Duck","latin":"Oxyura jamaicensis","img":"thumbs/330px-Ruddy_Duck_%28Oxyura_jamaicensis%29_RWD2.jpg","o":null,"od":1},{"id":"Sorthalset Svane","da":"Sorthalset Svane","en":"Black-necked Swan","latin":"Cygnus melancoryphus","img":"thumbs/330px-Black-necked_Swan.jpg","o":null,"od":2,"esc":1},{"id":"Rødhalset Gås","da":"Rødhalset Gås","en":"Red-breasted Goose","latin":"Branta ruficollis","img":"thumbs/330px-Red-breasted_goose_arp.jpg","o":null,"od":8},{"id":"Kejsergås","da":"Kejsergås","en":"Emperor Goose","latin":"Anser canagicus","img":"thumbs/330px-Emperor.goose.arp.750pix.jpg","o":null,"od":13,"esc":1},{"id":"Dværgsnegås","da":"Dværgsnegås","en":"Ross's Goose","latin":"Anser rossii","img":"thumbs/330px-Ross%27s_Goose_%28Chen_rossii%29_%2823321411711%29.jpg","o":null,"od":14},{"id":"Svanegås","da":"Svanegås","en":"Swan Goose","latin":"Anser cygnoides","img":"thumbs/330px-Anser_cygnoides-Beijing.jpg","o":null,"od":17,"esc":1},{"id":"Dværggås","da":"Dværggås","en":"Lesser White-fronted Goose","latin":"Anser erythropus","img":"thumbs/330px-Anser_erythropus.jpg","o":null,"od":18},{"id":"Brudeand","da":"Brudeand","en":"Wood Duck","latin":"Aix sponsa","img":"thumbs/330px-Wood_Duck_%28Aix_sponsa%29%2C_Parc_du_Rouge-Clo%C3%AEtre%2C_Brussels.jpg","o":null,"od":25,"esc":1},{"id":"Stellersand","da":"Stellersand","en":"Steller's Eider","latin":"Polysticta stelleri","img":"thumbs/330px-Steller%27s_Eider_%28Polysticta_stelleri%29_%2813667966664%29.jpg","o":null,"od":31},{"id":"Kongeederfugl","da":"Kongeederfugl","en":"King Eider","latin":"Somateria spectabilis","img":"thumbs/330px-King_Eider_%28Somateria_spectabilis%29_%2813667616745%29.jpg","o":null,"od":32},{"id":"Amerikansk Sortand","da":"Amerikansk Sortand","en":"Black Scoter","latin":"Melanitta americana","img":"thumbs/330px-Melanitta_americana_Barnegat_NJ.jpg","o":null,"od":35},{"id":"Brilleand","da":"Brilleand","en":"Surf Scoter","latin":"Melanitta perspicillata","img":"thumbs/330px-Melanitta_perspicillata.jpg","o":null,"od":36},{"id":"Amerikansk Fløjlsand","da":"Amerikansk Fløjlsand","en":"White-winged Scoter","latin":"Melanitta deglandi","img":"thumbs/330px-White-winged_Scoter.jpg","o":null,"od":38},{"id":"Asiatisk Fløjlsand","da":"Asiatisk Fløjlsand","en":"Stejneger's Scoter","latin":"Melanitta stejnegeri","img":"thumbs/330px-Melanitta_stejnegeri.jpg","o":null,"od":39},{"id":"Bøffeland","da":"Bøffeland","en":"Bufflehead","latin":"Bucephala albeola","img":"thumbs/330px-Bucephala-albeola-007.jpg","o":null,"od":40,"esc":1},{"id":"Hjelmskallesluger","da":"Hjelmskallesluger","en":"Hooded Merganser","latin":"Lophodytes cucullatus","img":"thumbs/330px-Hooded_merganser_male_in_Central_Park_%2895790%29.jpg","o":null,"od":43,"esc":1},{"id":"Marmorand","da":"Marmorand","en":"Marbled Duck","latin":"Marmaronetta angustirostris","img":"thumbs/330px-Marmaronetta_angustirostris%2C_London_Wetland_Centre%2C_UK_-_Diliff.jpg","o":null,"od":46,"esc":1},{"id":"Halsbåndstroldand","da":"Halsbåndstroldand","en":"Ring-necked Duck","latin":"Aythya collaris","img":"thumbs/330px-Aythya-collaris-001.jpg","o":null,"od":50},{"id":"Lille Bjergand","da":"Lille Bjergand","en":"Lesser Scaup","latin":"Aythya affinis","img":"thumbs/330px-Lesser_scaup_-_Aythya_affinis.jpg","o":null,"od":52},{"id":"Kaneland","da":"Kaneland","en":"Cinnamon Teal","latin":"Spatula cyanoptera","img":"thumbs/330px-Sarcelle_cannelle_%28Spatula_cyanoptera%29.jpg","o":null,"od":57,"esc":1},{"id":"Segland","da":"Segland","en":"Falcated Duck","latin":"Mareca falcata","img":"thumbs/330px-Falcated_duck_1.jpg","o":null,"od":59,"esc":1},{"id":"Amerikansk Pibeand","da":"Amerikansk Pibeand","en":"American Wigeon","latin":"Mareca americana","img":"thumbs/330px-Anas_americana_-_drake.jpg","o":null,"od":62},{"id":"Chilepibeand","da":"Chilepibeand","en":"Chiloe Wigeon","latin":"Mareca sibilatrix","img":"thumbs/330px-Chiloe_wigeon.jpg","o":null,"od":63,"esc":1},{"id":"Sortbrun And","da":"Sortbrun And","en":"American Black Duck","latin":"Anas rubripes","img":"thumbs/330px-American_Black_Duck_pair_at_Green_Wood_Cemetery%2C_Brooklyn_%2862110%29.jpg","o":null,"od":65},{"id":"Tjur","da":"Tjur","en":"Western Capercaillie","latin":"Tetrao urogallus","img":"thumbs/330px-Capercaillie_%288751340764%29.jpg","o":null,"od":68,"esc":1},{"id":"Urfugl","da":"Urfugl","en":"Black Grouse","latin":"Lyrurus tetrix","img":"thumbs/330px-Black_Grouse_Nationalpark_Bayerischer_Wald.jpg","o":null,"od":69},{"id":"Kongefasan","da":"Kongefasan","en":"Reeves's Pheasant","latin":"Syrmaticus reevesii","img":"thumbs/330px-BxZ_Syrmaticus_reevesii_00.jpg","o":null,"od":71,"esc":1},{"id":"Guldfasan","da":"Guldfasan","en":"Golden Pheasant","latin":"Chrysolophus pictus","img":"thumbs/330px-Chrysolophus_pictus_-Melbourne_Zoo%2C_Australia-8a.jpg","o":null,"od":72,"esc":1},{"id":"Påfugl","da":"Påfugl","en":"Indian Peafowl","latin":"Pavo cristatus","img":"thumbs/330px-Peacock%2C_East_Park%2C_Hull_-_panoramio.jpg","o":null,"od":74,"esc":1},{"id":"Rødhøne","da":"Rødhøne","en":"Red-legged Partridge","latin":"Alectoris rufa","img":"thumbs/330px-Perdrix_rouge.jpg","o":null,"od":76,"esc":1},{"id":"Chukarhøne","da":"Chukarhøne","en":"Chukar Partridge","latin":"Alectoris chukar","img":"thumbs/330px-Alectoris-chukar-001.jpg","o":null,"od":77,"esc":1},{"id":"Lille Flamingo","da":"Lille Flamingo","en":"Lesser Flamingo","latin":"Phoeniconaias minor","img":"thumbs/330px-Lesser_Flamingo_%28Phoenicopterus_minor%29_-_Flickr_-_Lip_Kee.jpg","o":null,"od":78,"esc":1},{"id":"Chileflamingo","da":"Chileflamingo","en":"Chilean Flamingo","latin":"Phoenicopterus chilensis","img":"thumbs/330px-Chilenischer_Flamingo_Tiergarten_Bernburg_2007.jpg","o":null,"od":79,"esc":1},{"id":"Stor Flamingo","da":"Stor Flamingo","en":"Greater Flamingo","latin":"Phoenicopterus roseus","img":"thumbs/330px-Greater_flamingo%2C_Camargue.jpg","o":null,"od":80,"esc":1},{"id":"Cariberflamingo","da":"Cariberflamingo","en":"American Flamingo","latin":"Phoenicopterus ruber","img":"thumbs/330px-American_flamingo_%28Phoenicopterus_ruber%29.JPG","o":null,"od":81,"esc":1},{"id":"Stortrappe","da":"Stortrappe","en":"Great Bustard","latin":"Otis tarda","img":"thumbs/330px-Drop_f%C3%BAzat%C3%BD_%28Otis_tarda%29_%282416576086%29.jpg","o":null,"od":87},{"id":"Østlig Kravetrappe","da":"Østlig Kravetrappe","en":"Macqueen's Bustard","latin":"Chlamydotis macqueenii","img":"thumbs/330px-MacQueens_Bustard_in_Greater_Rann_of_Kutch%2C_Gujarat%2C_India.jpg","o":null,"od":88},{"id":"Dværgtrappe","da":"Dværgtrappe","en":"Little Bustard","latin":"Tetrax tetrax","img":"thumbs/330px-Little_Bustard_%28Tetrax_tetrax%29%2C_Castuera%2C_Extremadura%2C_Spain.jpg","o":null,"od":89},{"id":"Skadegøg","da":"Skadegøg","en":"Great Spotted Cuckoo","latin":"Clamator glandarius","img":"thumbs/330px-Clamator_glandarius_%28cropped_2%29.jpg","o":null,"od":90},{"id":"Gulnæbbet Gøg","da":"Gulnæbbet Gøg","en":"Yellow-billed Cuckoo","latin":"Coccyzus americanus","img":"thumbs/330px-Coccyzus-americanus-001.jpg","o":null,"od":91},{"id":"Sortnæbbet Gøg","da":"Sortnæbbet Gøg","en":"Black-billed Cuckoo","latin":"Coccyzus erythropthalmus","img":"thumbs/330px-Black-billed-cuckoo2.jpg","o":null,"od":92},{"id":"Steppehøne","da":"Steppehøne","en":"Pallas's Sandgrouse","latin":"Syrrhaptes paradoxus","img":"thumbs/330px-Syrrhaptes_paradoxus_%28J%C3%A1n_Svetl%C3%ADk%29.jpg","o":null,"od":94},{"id":"Sørgedue","da":"Sørgedue","en":"Mourning Dove","latin":"Zenaida macroura","img":"thumbs/330px-Mourning_Dove_2006.jpg","o":null,"od":95},{"id":"Østlig Turteldue","da":"Østlig Turteldue","en":"Oriental Turtle Dove","latin":"Streptopelia orientalis","img":"thumbs/330px-Orientalturtledove.JPG","o":null,"od":96},{"id":"Turteldue","da":"Turteldue","en":"European Turtle Dove","latin":"Streptopelia turtur","img":"thumbs/330px-Turtle_dove_%28Streptopelia_turtur_turtur%29_Hungary.jpg","o":null,"od":97},{"id":"Prærietrane","da":"Prærietrane","en":"Sandhill Crane","latin":"Antigone canadensis","img":"thumbs/330px-Adult_and_juvenile_Grus_canadensis_2.jpg","o":null,"od":102},{"id":"Jomfrutrane","da":"Jomfrutrane","en":"Demoiselle Crane","latin":"Grus virgo","img":"thumbs/330px-Demoiselle_Cranes_at_Tal_Chappar.jpg","o":null,"od":103},{"id":"Japansk Trane","da":"Japansk Trane","en":"Red-crowned Crane","latin":"Grus japonensis","img":"thumbs/330px-Grus_japonensis_-Hokkaido%2C_Japan_-several-8_%281%29.jpg","o":null,"od":104,"esc":1},{"id":"Lille Sultanhøne","da":"Lille Sultanhøne","en":"Allen's Gallinule","latin":"Porphyrio alleni","img":"thumbs/330px-Porphyrio_alleni_Martien_Brand.jpg","o":null,"od":111},{"id":"Sultanhøne","da":"Sultanhøne","en":"Western Swamphen","latin":"Porphyrio porphyrio","img":"thumbs/330px-Purpurhuhn.jpg","o":null,"od":112,"esc":1},{"id":"Lille Rørvagtel","da":"Lille Rørvagtel","en":"Little Crake","latin":"Zapornia parva","img":"thumbs/330px-Porzana_parva_%2850%29.jpg","o":null,"od":113},{"id":"Dværgrørvagtel","da":"Dværgrørvagtel","en":"Baillon's Crake","latin":"Zapornia pusilla","img":"thumbs/330px-Porzana_pusilla_-_Mount_Annan_Botanical_Garden.jpg","o":null,"od":114},{"id":"Triel","da":"Triel","en":"Eurasian Stone-curlew","latin":"Burhinus oedicnemus","img":"thumbs/330px-Burhinus_oedicnemus_insularum_Lanzarote_1.jpg","o":null,"od":115},{"id":"Stylteløber","da":"Stylteløber","en":"Black-winged Stilt","latin":"Himantopus himantopus","img":"thumbs/330px-Black-winged_stilt_%28Himantopus_himantopus%29.jpg","o":null,"od":117},{"id":"Amerikansk Hjejle","da":"Amerikansk Hjejle","en":"American Golden Plover","latin":"Pluvialis dominica","img":"thumbs/330px-Pluvialis_dominica1.jpg","o":null,"od":121},{"id":"Sibirisk Hjejle","da":"Sibirisk Hjejle","en":"Pacific Golden Plover","latin":"Pluvialis fulva","img":"thumbs/330px-Pluvialis_fulva_-Bering_Land_Bridge_National_Preserve%2C_Alaska%2C_USA-8.jpg","o":null,"od":122},{"id":"Pomeransfugl","da":"Pomeransfugl","en":"Eurasian Dotterel","latin":"Eudromias morinellus","img":"thumbs/330px-Charadrius_morinellus_male.jpg","o":null,"od":123},{"id":"Sporevibe","da":"Sporevibe","en":"Spur-winged Lapwing","latin":"Vanellus spinosus","img":"thumbs/330px-Spur-winged_lapwing_%28Vanellus_spinosus%29_Gambia.jpg","o":null,"od":127,"esc":1},{"id":"Steppevibe","da":"Steppevibe","en":"Sociable Lapwing","latin":"Vanellus gregarius","img":"thumbs/330px-SociablePlover.jpg","o":null,"od":128},{"id":"Sumpvibe","da":"Sumpvibe","en":"White-tailed Lapwing","latin":"Vanellus leucurus","img":"thumbs/330px-White-tailed_lapwing_%28Vanellus_leucurus%29.jpg","o":null,"od":129},{"id":"Kaspisk Præstekrave","da":"Kaspisk Præstekrave","en":"Caspian Plover","latin":"Anarhynchus asiaticus","img":"thumbs/330px-Caspian_Plover_%28Charadrius_asiaticus%29_%288079444645%29.jpg","o":null,"od":130},{"id":"Tibetansk Præstekrave","da":"Tibetansk Præstekrave","en":"Tibetan Sand Plover","latin":"Anarhynchus atrifrons","img":"thumbs/330px-Female_Lesser_Sandplover.jpg","o":null,"od":131},{"id":"Sibirisk Præstekrave","da":"Sibirisk Præstekrave","en":"Siberian Sand Plover","latin":"Anarhynchus mongolus","img":"thumbs/330px-Charadrius_mongolus_-_Laem_Phak_Bia.jpg","o":null,"od":132},{"id":"Ørkenpræstekrave","da":"Ørkenpræstekrave","en":"Greater Sand Plover","latin":"Anarhynchus leschenaultii","img":"thumbs/330px-Greater_Sand_Plover_1_-_Lee_Point.jpg","o":null,"od":133},{"id":"Hvidbrystet Præstekrave","da":"Hvidbrystet Præstekrave","en":"Kentish Plover","latin":"Anarhynchus alexandrinus","img":"thumbs/330px-Kentish_Plover_Charadrius_alexandrinus%2C_India.jpg","o":null,"od":134},{"id":"Bartramsklire","da":"Bartramsklire","en":"Upland Sandpiper","latin":"Bartramia longicauda","img":"thumbs/330px-UplandSandpiperOntarioCropped.jpg","o":null,"od":135},{"id":"Canadisk Kobbersneppe","da":"Canadisk Kobbersneppe","en":"Hudsonian Godwit","latin":"Limosa haemastica","img":"thumbs/330px-Limosa_haemastica_-_Kogarah_Bay.jpg","o":null,"od":140},{"id":"Langnæbbet Sneppeklire","da":"Langnæbbet Sneppeklire","en":"Long-billed Dowitcher","latin":"Limnodromus scolopaceus","img":"thumbs/330px-Limnodromus_scolopaceus_Mike_Baird_crop.jpg","o":null,"od":141},{"id":"Terekklire","da":"Terekklire","en":"Terek Sandpiper","latin":"Xenus cinereus","img":"thumbs/330px-Xenus_cinereus_%28Alnus%29.jpg","o":null,"od":146},{"id":"Amerikansk Svømmesneppe","da":"Amerikansk Svømmesneppe","en":"Wilson's Phalarope","latin":"Phalaropus tricolor","img":"thumbs/330px-Wilson%27s_Phalarope%2C_Oregon_03_%28cropped%29.jpg","o":null,"od":149},{"id":"Thorshane","da":"Thorshane","en":"Red Phalarope","latin":"Phalaropus fulicarius","img":"thumbs/330px-Phalaropus_fulicarius_98755138_%28cropped%29.jpg","o":null,"od":150},{"id":"Damklire","da":"Damklire","en":"Marsh Sandpiper","latin":"Tringa stagnatilis","img":"thumbs/330px-Tringa_stagnatilis_2_-_Laem_Pak_Bia.jpg","o":null,"od":153},{"id":"Lille Gulben","da":"Lille Gulben","en":"Lesser Yellowlegs","latin":"Tringa flavipes","img":"thumbs/330px-Lesser_Yellowlegs.jpg","o":null,"od":156},{"id":"Stor Gulben","da":"Stor Gulben","en":"Greater Yellowlegs","latin":"Tringa melanoleuca","img":"thumbs/330px-Greater_Yellowlegs2.jpg","o":null,"od":159},{"id":"Spidshalet Ryle","da":"Spidshalet Ryle","en":"Sharp-tailed Sandpiper","latin":"Calidris acuminata","img":"thumbs/330px-Calidris_acuminata_-_Hexham_Swamp.jpg","o":null,"od":163},{"id":"Klireryle","da":"Klireryle","en":"Stilt Sandpiper","latin":"Calidris himantopus","img":"thumbs/330px-Calidris_himantopus.jpg","o":null,"od":166},{"id":"Rødhalset Ryle","da":"Rødhalset Ryle","en":"Red-necked Stint","latin":"Calidris ruficollis","img":"thumbs/330px-Red-necked_Stint_-_Boat_Harbour.jpg","o":null,"od":167},{"id":"Prærieløber","da":"Prærieløber","en":"Buff-breasted Sandpiper","latin":"Calidris subruficollis","img":"thumbs/330px-Tryngites_subruficollis_-USA-8.jpg","o":null,"od":169},{"id":"Sandløber","da":"Sandløber","en":"Sanderling","latin":"Calidris alba","img":"thumbs/330px-Calidris_alba_-_Laem_Phak_Bia.jpg","o":null,"od":170},{"id":"Sortgrå Ryle","da":"Sortgrå Ryle","en":"Purple Sandpiper","latin":"Calidris maritima","img":"thumbs/330px-Calidris_maritima.jpg","o":null,"od":172},{"id":"Bairdsryle","da":"Bairdsryle","en":"Baird's Sandpiper","latin":"Calidris bairdii","img":"thumbs/330px-Calidris_bairdii.jpg","o":null,"od":173},{"id":"Stribet Ryle","da":"Stribet Ryle","en":"Pectoral Sandpiper","latin":"Calidris melanotos","img":"thumbs/330px-Pectoral_Sandpiper3.jpg","o":null,"od":174},{"id":"Tyknæbbet Dværgryle","da":"Tyknæbbet Dværgryle","en":"Semipalmated Sandpiper","latin":"Calidris pusilla","img":"thumbs/330px-SemiPalmHeislerville.png","o":null,"od":175},{"id":"Hvidrygget Ryle","da":"Hvidrygget Ryle","en":"White-rumped Sandpiper","latin":"Calidris fuscicollis","img":"thumbs/330px-Calidris_fuscicollis_PLAYERO_RABADILLA_BLANCA.jpg","o":null,"od":177},{"id":"Ørkenløber","da":"Ørkenløber","en":"Cream-colored Courser","latin":"Cursorius cursor","img":"thumbs/330px-Cream-coloured_Courser_%28Cursorius_cursor%29_Tal_Chhapar%2C_Churu%2C_Rajasthan%2C_India_February_15th%2C_2013.jpg","o":null,"od":178},{"id":"Orientbraksvale","da":"Orientbraksvale","en":"Oriental Pratincole","latin":"Glareola maldivarum","img":"thumbs/330px-Glareola_maldivarum_-_Beung_Borapet.jpg","o":null,"od":179},{"id":"Sortvinget Braksvale","da":"Sortvinget Braksvale","en":"Black-winged Pratincole","latin":"Glareola nordmanni","img":"thumbs/330px-Tyrkyshka.jpg","o":null,"od":180},{"id":"Rødvinget Braksvale","da":"Rødvinget Braksvale","en":"Collared Pratincole","latin":"Glareola pratincola","img":"thumbs/330px-Collared_pratincole_%28Glareola_pratincola%29.jpg","o":null,"od":181},{"id":"Lille Kjove","da":"Lille Kjove","en":"Long-tailed Jaeger","latin":"Stercorarius longicaudus","img":"thumbs/330px-Long-tailed_Skua_%28js%29_26.jpg","o":null,"od":183},{"id":"Mellemkjove","da":"Mellemkjove","en":"Pomarine Jaeger","latin":"Stercorarius pomarinus","img":"thumbs/330px-Stercorarius_pomarinusPCCA20070623-3985B.jpg","o":null,"od":184},{"id":"Lunde","da":"Lunde","en":"Atlantic Puffin","latin":"Fratercula arctica","img":"thumbs/330px-Puffin_%28Fratercula_arctica%29.jpg","o":null,"od":186},{"id":"Tejst","da":"Tejst","en":"Black Guillemot","latin":"Cepphus grylle","img":"thumbs/330px-Black_Guillemot_Cepphus_grylle.jpg","o":null,"od":187},{"id":"Alk","da":"Alk","en":"Razorbill","latin":"Alca torda","img":"thumbs/330px-Razorbill_%28Alca_torda%29_Skomer.jpg","o":null,"od":188},{"id":"Polarlomvie","da":"Polarlomvie","en":"Thick-billed Murre","latin":"Uria lomvia","img":"thumbs/330px-Uria_lomvia1.jpg","o":null,"od":190},{"id":"Lomvie","da":"Lomvie","en":"Common Murre","latin":"Uria aalge","img":"thumbs/330px-Common_Murre_Uria_aalge.jpg","o":null,"od":191},{"id":"Brilleterne","da":"Brilleterne","en":"Bridled Tern","latin":"Onychoprion anaethetus","img":"thumbs/330px-Bridled_Tern_LEI_Nov06.JPG","o":null,"od":192},{"id":"Sandterne","da":"Sandterne","en":"Gull-billed Tern","latin":"Gelochelidon nilotica","img":"thumbs/330px-Gelochelidon_nilotica_vanrossemi.jpg","o":null,"od":195},{"id":"Hvidskægget Terne","da":"Hvidskægget Terne","en":"Whiskered Tern","latin":"Chlidonias hybrida","img":"thumbs/330px-Whiskered_tern_%28Chlidonias_hybrida_delalandii%29.jpg","o":null,"od":196},{"id":"Aztekerterne","da":"Aztekerterne","en":"Elegant Tern","latin":"Thalasseus elegans","img":"thumbs/330px-Elegant_Tern_Bolsa_Chica.jpg","o":null,"od":200},{"id":"Rosenterne","da":"Rosenterne","en":"Roseate Tern","latin":"Sterna dougallii","img":"thumbs/330px-Roseate_terns_Palometas.jpg","o":null,"od":203},{"id":"Rosenmåge","da":"Rosenmåge","en":"Ross's Gull","latin":"Rhodostethia rosea","img":"thumbs/330px-Rhodostethia_rosea.jpg","o":null,"od":205},{"id":"Ride","da":"Ride","en":"Black-legged Kittiwake","latin":"Rissa tridactyla","img":"thumbs/330px-Rissa_tridactyla_%28Vard%C3%B8%2C_2012%29.jpg","o":null,"od":206},{"id":"Sabinemåge","da":"Sabinemåge","en":"Sabine's Gull","latin":"Xema sabini","img":"thumbs/330px-Xema_sabini_-Iceland_-swimming-8_%281%29.jpg","o":null,"od":207},{"id":"Ismåge","da":"Ismåge","en":"Ivory Gull","latin":"Pagophila eburnea","img":"thumbs/330px-Ivory_Gull_Portrait.jpg","o":null,"od":208},{"id":"Tyndnæbbet Måge","da":"Tyndnæbbet Måge","en":"Slender-billed Gull","latin":"Chroicocephalus genei","img":"thumbs/330px-Slender-billed_gull_%28Chroicocephalus_genei%29_Bahrain.jpg","o":null,"od":209},{"id":"Bonapartemåge","da":"Bonapartemåge","en":"Bonaparte's Gull","latin":"Chroicocephalus philadelphia","img":"thumbs/330px-Bonaparte%27s_Gull_in_breeding_plumage_-_52016973462.jpg","o":null,"od":210},{"id":"Lattermåge","da":"Lattermåge","en":"Laughing Gull","latin":"Leucophaeus atricilla","img":"thumbs/330px-Leucophaeus_atricilla_stare.jpg","o":null,"od":212},{"id":"Præriemåge","da":"Præriemåge","en":"Franklin's Gull","latin":"Leucophaeus pipixcan","img":"thumbs/330px-Franklin%27s_Gull%2C_Calgary.jpg","o":null,"od":213},{"id":"Stor Sorthovedet Måge","da":"Stor Sorthovedet Måge","en":"Pallas's Gull","latin":"Ichthyaetus ichthyaetus","img":"thumbs/330px-Larus_ichtyaetus_1.png","o":null,"od":214},{"id":"Audouinsmåge","da":"Audouinsmåge","en":"Audouin's Gull","latin":"Ichthyaetus audouinii","img":"thumbs/330px-Ichthyaetus_audouinii.jpg","o":null,"od":215},{"id":"Ringnæbbet Måge","da":"Ringnæbbet Måge","en":"Ring-billed Gull","latin":"Larus delawarensis","img":"thumbs/330px-Ring-billed_gull_in_Red_Hook_%2842799%29.jpg","o":null,"od":217},{"id":"Armensk Måge","da":"Armensk Måge","en":"Armenian Gull","latin":"Larus armenicus","img":"thumbs/330px-Armenian_Gull_standing%2C_closeup_at_Sevan_Lake.jpg","o":null,"od":222},{"id":"Gråmåge","da":"Gråmåge","en":"Glaucous Gull","latin":"Larus hyperboreus","img":"thumbs/330px-Glacous_Gull_on_ice.jpg","o":null,"od":224},{"id":"Gråvinget Måge","da":"Gråvinget Måge","en":"Glaucous-winged Gull","latin":"Larus glaucescens","img":"thumbs/330px-Glaucous-winged_gull.jpg","o":null,"od":226},{"id":"Islom","da":"Islom","en":"Common Loon","latin":"Gavia immer","img":"thumbs/330px-Gavia_immer_-Minocqua%2C_Wisconsin%2C_USA_-swimming-8.jpg","o":null,"od":229},{"id":"Hvidnæbbet Lom","da":"Hvidnæbbet Lom","en":"Yellow-billed Loon","latin":"Gavia adamsii","img":"thumbs/330px-Yellow-billed_Loon_Chipp_South_8-12-13_Ryan_Askren.jpg","o":null,"od":230},{"id":"Stillehavslom","da":"Stillehavslom","en":"Pacific Loon","latin":"Gavia pacifica","img":"thumbs/330px-PacificLoon24.jpg","o":null,"od":231},{"id":"Sortstrubet Lom","da":"Sortstrubet Lom","en":"Black-throated Loon","latin":"Gavia arctica","img":"thumbs/330px-Black-throated_Diver%2C_Oulu%2C_Finland_02_%2815195370798%29.jpg","o":null,"od":232},{"id":"Sortbrynet Albatros","da":"Sortbrynet Albatros","en":"Black-browed Albatross","latin":"Thalassarche melanophris","img":"thumbs/330px-Thalassarche_melanophrys_-_SE_Tasmania.jpg","o":null,"od":233},{"id":"Wilsons Stormsvale","da":"Wilsons Stormsvale","en":"Wilson's Storm Petrel","latin":"Oceanites oceanicus","img":"thumbs/330px-Wilson%27s_Storm-petrel_0A2A7191.jpg","o":null,"od":234},{"id":"Lille Stormsvale","da":"Lille Stormsvale","en":"European Storm Petrel","latin":"Hydrobates pelagicus","img":"thumbs/330px-European_storm_petrel_%28Hydrobates_pelagicus%29_Sagres.jpg","o":null,"od":235},{"id":"Stor Stormsvale","da":"Stor Stormsvale","en":"Leach's Storm Petrel","latin":"Hydrobates leucorhous","img":"thumbs/330px-Leach%27s_Storm-petrel_Saint-Jean-de-Monts_01.jpg","o":null,"od":236},{"id":"Mallemuk","da":"Mallemuk","en":"Northern Fulmar","latin":"Fulmarus glacialis","img":"thumbs/330px-Northern-Fulmar2_cropped.jpg","o":null,"od":237},{"id":"Scopolis Skråpe","da":"Scopolis Skråpe","en":"Scopoli's Shearwater","latin":"Calonectris diomedea","img":"thumbs/330px-Scopoli%27s_Shearwater.jpg","o":null,"od":238},{"id":"Atlantisk Skråpe","da":"Atlantisk Skråpe","en":"Cory's Shearwater","latin":"Calonectris borealis","img":"thumbs/330px-Cory%27s_Shearwater_from_the_Crossley_ID_Guide_Britain_and_Ireland_crop.jpg","o":null,"od":239},{"id":"Sodfarvet Skråpe","da":"Sodfarvet Skråpe","en":"Sooty Shearwater","latin":"Ardenna grisea","img":"thumbs/330px-Puffinus_griseus_in_flight_-_SE_Tasmania.jpg","o":null,"od":240},{"id":"Storskråpe","da":"Storskråpe","en":"Great Shearwater","latin":"Ardenna gravis","img":"thumbs/330px-Greater_shearwater_%28Ardenna_gravis%29_Sagres.jpg","o":null,"od":241},{"id":"Almindelig Skråpe","da":"Almindelig Skråpe","en":"Manx Shearwater","latin":"Puffinus puffinus","img":"thumbs/330px-Manx_Shearwater.JPG","o":null,"od":242},{"id":"Middelhavsskråpe","da":"Middelhavsskråpe","en":"Yelkouan Shearwater","latin":"Puffinus yelkouan","img":"thumbs/330px-Puffinus_yelkouan_140249998.jpg","o":null,"od":243},{"id":"Tropeskråpe","da":"Tropeskråpe","en":"Audubon's Shearwater","latin":"Puffinus lherminieri","img":"thumbs/330px-Audobon%27s_Shearwater.jpg","o":null,"od":244},{"id":"Sort Stork","da":"Sort Stork","en":"Black Stork","latin":"Ciconia nigra","img":"thumbs/330px-Ciconia_nigra_-Kruger_National_Park-8.jpg","o":null,"od":245},{"id":"Pragtfregatfugl","da":"Pragtfregatfugl","en":"Magnificent Frigatebird","latin":"Fregata magnificens","img":"thumbs/330px-Fregata_magnificens_-Galapagos%2C_Ecuador_-male-8_%281%29.jpg","o":null,"od":247},{"id":"Brun Sule","da":"Brun Sule","en":"Brown Booby","latin":"Sula leucogaster","img":"thumbs/330px-Atob%C3%A1-pardo.jpg","o":null,"od":249},{"id":"Dværgskarv","da":"Dværgskarv","en":"Pygmy Cormorant","latin":"Microcarbo pygmaeus","img":"thumbs/330px-Microcarbo_pygmaeus_-_Pygmy_cormorant.jpg","o":null,"od":250},{"id":"Topskarv","da":"Topskarv","en":"European Shag","latin":"Gulosus aristotelis","img":"thumbs/330px-Shag_Phalacrocorax_aristotelis.jpg","o":null,"od":251},{"id":"Eremitibis","da":"Eremitibis","en":"Northern Bald Ibis","latin":"Geronticus eremita","img":"thumbs/330px-Waldrapp_Geronticus_eremita.jpg","o":null,"od":254,"esc":1},{"id":"Afrikansk Skestork","da":"Afrikansk Skestork","en":"African Spoonbill","latin":"Platalea alba","img":"thumbs/330px-African_spoonbill_%28Platalea_alba%29.jpg","o":null,"od":255,"esc":1},{"id":"Hellig Ibis","da":"Hellig Ibis","en":"African Sacred Ibis","latin":"Threskiornis aethiopicus","img":"thumbs/330px-Sacred_ibis_%28Threskiornis_aethiopicus%29.jpg","o":null,"od":257,"esc":1},{"id":"Hvid Pelikan","da":"Hvid Pelikan","en":"Great White Pelican","latin":"Pelecanus onocrotalus","img":"thumbs/330px-Great_white_pelican_%28Pelecanus_onocrotalus%29.jpg","o":null,"od":258,"esc":1},{"id":"Rosapelikan","da":"Rosapelikan","en":"Pink-backed Pelican","latin":"Pelecanus rufescens","img":"thumbs/330px-Pink_backed_pelican_side_view.jpg","o":null,"od":259,"esc":1},{"id":"Krøltoppet Pelikan","da":"Krøltoppet Pelikan","en":"Dalmatian Pelican","latin":"Pelecanus crispus","img":"thumbs/330px-ComputerHotline_-_Pelecanus_crispus_%28by%29_%281%29.jpg","o":null,"od":260},{"id":"Amerikansk Rørdrum","da":"Amerikansk Rørdrum","en":"American Bittern","latin":"Botaurus lentiginosus","img":"thumbs/330px-Botaurus_lentiginosus_28079.JPG","o":null,"od":262},{"id":"Dværghejre","da":"Dværghejre","en":"Little Bittern","latin":"Botaurus minutus","img":"thumbs/330px-Zwergdommel.jpg","o":null,"od":263},{"id":"Nathejre","da":"Nathejre","en":"Black-crowned Night Heron","latin":"Nycticorax nycticorax","img":"thumbs/330px-BCNH_CMCNJ_for_Wiki_%28cropped%29.png","o":null,"od":265},{"id":"Tophejre","da":"Tophejre","en":"Squacco Heron","latin":"Ardeola ralloides","img":"thumbs/330px-Crabier_chevelu.jpg","o":null,"od":266},{"id":"Kohejre","da":"Kohejre","en":"Western Cattle Egret","latin":"Ardea ibis","img":"thumbs/330px-Cattle_egret_%28Bubulcus_ibis%29_summer_plumage_Cyprus.jpg","o":null,"od":268},{"id":"Purpurhejre","da":"Purpurhejre","en":"Purple Heron","latin":"Ardea purpurea","img":"thumbs/330px-SL_Bundala_NP_asv2020-01_img04.jpg","o":null,"od":269},{"id":"Natravn","da":"Natravn","en":"European Nightjar","latin":"Caprimulgus europaeus","img":"thumbs/330px-%C5%9Eivanxap%C3%AEnok.jpg","o":null,"od":271},{"id":"Ørkennatravn","da":"Ørkennatravn","en":"Egyptian Nightjar","latin":"Caprimulgus aegyptius","img":"thumbs/330px-Egyptian_Nightjar.jpg","o":null,"od":272},{"id":"Tornhalesejler","da":"Tornhalesejler","en":"White-throated Needletail","latin":"Hirundapus caudacutus","img":"thumbs/330px-White-throated_Needletail_0A2A6919.jpg","o":null,"od":273},{"id":"Alpesejler","da":"Alpesejler","en":"Alpine Swift","latin":"Tachymarptis melba","img":"thumbs/330px-%CE%92%CE%BF%CF%85%CE%BD%CE%BF%CF%83%CF%84%CE%B1%CF%87%CF%84%CE%AC%CF%81%CE%B1_Alpine_Swift_Tachymarptis_melba.jpg","o":null,"od":274},{"id":"Orientsejler","da":"Orientsejler","en":"Pacific Swift","latin":"Apus pacificus","img":"thumbs/330px-Pacific_Swift.jpg","o":null,"od":275},{"id":"Kaffersejler","da":"Kaffersejler","en":"White-rumped Swift","latin":"Apus caffer","img":"thumbs/330px-White-rumped_swift%2C_Apus_caffer%2C_at_Suikerbosrand_Nature_Reserve%2C_Gauteng%2C_South_Africa_%2823057155930%29%2C_crop.jpg","o":null,"od":276},{"id":"Lille Sejler","da":"Lille Sejler","en":"Little Swift","latin":"Apus affinis","img":"thumbs/330px-Little_swift%2C_Apus_affinis%2C_at_Kruger_National_Park%2C_South_Africa%2C_crop.jpg","o":null,"od":277},{"id":"Gråsejler","da":"Gråsejler","en":"Pallid Swift","latin":"Apus pallidus","img":"thumbs/330px-Apus_pallidus_-Greece-8.jpg","o":null,"od":279},{"id":"Slørugle","da":"Slørugle","en":"Western Barn Owl","latin":"Tyto alba","img":"thumbs/330px-%27Tutoke%27_-_geograph.org.uk_-_2532332.jpg","o":null,"od":280},{"id":"Perleugle","da":"Perleugle","en":"Boreal Owl","latin":"Aegolius funereus","img":"thumbs/330px-Aegolius-funereus-001.jpg","o":null,"od":281},{"id":"Kirkeugle","da":"Kirkeugle","en":"Little Owl","latin":"Athene noctua","img":"thumbs/330px-Mochuelo_Com%C3%BAn_%28_Athene_noctua_%29%281%29.jpg","o":null,"od":282},{"id":"Høgeugle","da":"Høgeugle","en":"Northern Hawk-Owl","latin":"Surnia ulula","img":"thumbs/330px-Surnia-ulula-002.jpg","o":null,"od":283},{"id":"Spurveugle","da":"Spurveugle","en":"Eurasian Pygmy Owl","latin":"Glaucidium passerinum","img":"thumbs/330px-Eurasian_pygmy_owl_%28Glaucidium_passerinum%29_Bia%C5%82owieza.jpg","o":null,"od":284},{"id":"Dværghornugle","da":"Dværghornugle","en":"Eurasian Scops Owl","latin":"Otus scops","img":"thumbs/330px-Scops_Owl_%28Otus_scops%29%2C_Kalloni%2C_Lesvos%2C_Greece%2C_19.04.2015_%2816773748434%29.jpg","o":null,"od":285},{"id":"Sneugle","da":"Sneugle","en":"Snowy Owl","latin":"Bubo scandiacus","img":"thumbs/330px-Snowy_Owl_%28240866707%29.jpeg","o":null,"od":288},{"id":"Stor Hornugle","da":"Stor Hornugle","en":"Eurasian Eagle-Owl","latin":"Bubo bubo","img":"thumbs/330px-Bubo_bubo_3_%28Martin_Mecnarowski%29.jpg","o":null,"od":289},{"id":"Kalkungrib","da":"Kalkungrib","en":"Turkey Vulture","latin":"Cathartes aura","img":"thumbs/330px-Turkey_vulture_%28Cathartes_aura%29_Orange_Walk.jpg","o":null,"od":291,"esc":1},{"id":"Blå Glente","da":"Blå Glente","en":"Black-winged Kite","latin":"Elanus caeruleus","img":"thumbs/330px-Black-shouldered_Kite_%28Elanus_caeruleus%29_in_Hyderabad_W_IMG_4418.jpg","o":null,"od":293},{"id":"Lammegrib","da":"Lammegrib","en":"Bearded Vulture","latin":"Gypaetus barbatus","img":"thumbs/330px-Bartgeier_Gypaetus_barbatus_front_Richard_Bartz.jpg","o":null,"od":294,"esc":1},{"id":"Ådselgrib","da":"Ådselgrib","en":"Egyptian Vulture","latin":"Neophron percnopterus","img":"thumbs/330px-Egyptian_Vulture_%2818208369344%29.jpg","o":null,"od":295},{"id":"Tophvepsevåge","da":"Tophvepsevåge","en":"Crested Honey Buzzard","latin":"Pernis ptilorhynchus","img":"thumbs/330px-Oriental_honey_buzzard_Mudumalai_Mar21_DSC01405.jpg","o":null,"od":297},{"id":"Munkegrib","da":"Munkegrib","en":"Cinereous Vulture","latin":"Aegypius monachus","img":"thumbs/330px-Buitre_negro_%281%29.jpg","o":null,"od":298},{"id":"Gåsegrib","da":"Gåsegrib","en":"Griffon Vulture","latin":"Gyps fulvus","img":"thumbs/330px-Gyps_fulvus_in_flight_-_Spain.jpg","o":null,"od":299},{"id":"Rüppells Grib","da":"Rüppells Grib","en":"Rüppell's Vulture","latin":"Gyps rueppelli","img":"thumbs/330px-R%C3%BCppell%27s_Vulture_%28Gyps_rueppelli%29_%2821160089681%29.jpg","o":null,"od":300,"esc":1},{"id":"Slangeørn","da":"Slangeørn","en":"Short-toed Snake Eagle","latin":"Circaetus gallicus","img":"thumbs/lossy-page1-330px-Biancone_con_preda.tif.jpg","o":null,"od":301},{"id":"Stor Skrigeørn","da":"Stor Skrigeørn","en":"Greater Spotted Eagle","latin":"Clanga clanga","img":"thumbs/330px-Aquila_clanga_from_Tal_Chapar_Wildlife_Sanctuary.jpg","o":null,"od":302},{"id":"Lille Skrigeørn","da":"Lille Skrigeørn","en":"Lesser Spotted Eagle","latin":"Clanga pomarina","img":"thumbs/330px-%D7%A2%D7%99%D7%98_%D7%97%D7%95%D7%A8%D7%A9.jpg","o":null,"od":303},{"id":"Dværgørn","da":"Dværgørn","en":"Booted Eagle","latin":"Hieraaetus pennatus","img":"thumbs/330px-MH_Booted.jpg","o":null,"od":304},{"id":"Steppeørn","da":"Steppeørn","en":"Steppe Eagle","latin":"Aquila nipalensis","img":"thumbs/330px-Steppe_Eagle_Portrait.jpg","o":null,"od":305},{"id":"Kejserørn","da":"Kejserørn","en":"Eastern Imperial Eagle","latin":"Aquila heliaca","img":"thumbs/330px-Eastern_Imperial_Eagle_cr.jpg","o":null,"od":306},{"id":"Høgeørn","da":"Høgeørn","en":"Bonelli's Eagle","latin":"Aquila fasciata","img":"thumbs/330px-Bonelli%27s_Eagle_-_Montsonis_-_Spain_S4E8373_%2824849913309%29.jpg","o":null,"od":308},{"id":"Amerikansk Kærhøg","da":"Amerikansk Kærhøg","en":"Northern Harrier","latin":"Circus hudsonius","img":"thumbs/330px-Northern_%28Hen%29_Harrier.jpg","o":null,"od":313},{"id":"Hedehøg","da":"Hedehøg","en":"Montagu's Harrier","latin":"Circus pygargus","img":"thumbs/330px-Montagu%27s_harrier_%28Circus_pygargus%29.jpg","o":null,"od":314},{"id":"Beringhavørn","da":"Beringhavørn","en":"Steller's Sea Eagle","latin":"Haliaeetus pelagicus","img":"thumbs/330px-Haliaeetus_pelagicus_%28Rausu%2C_Japan%29.jpg","o":null,"od":318,"esc":1},{"id":"Hvidhovedet Havørn","da":"Hvidhovedet Havørn","en":"Bald Eagle","latin":"Haliaeetus leucocephalus","img":"thumbs/330px-About_to_Launch_%2826075320352%29.jpg","o":null,"od":320,"esc":1},{"id":"Ørnevåge","da":"Ørnevåge","en":"Long-legged Buzzard","latin":"Buteo rufinus","img":"thumbs/330px-Long-legged_buzzard.jpg","o":null,"od":323},{"id":"Hærfugl","da":"Hærfugl","en":"Eurasian Hoopoe","latin":"Upupa epops","img":"thumbs/330px-Eurasian_hoopoe_by_Gunjan_Pandey.jpg","o":null,"od":324},{"id":"Ellekrage","da":"Ellekrage","en":"European Roller","latin":"Coracias garrulus","img":"thumbs/330px-Coracias_garrulus_-_European_roller_05.jpg","o":null,"od":325},{"id":"Biæder","da":"Biæder","en":"European Bee-eater","latin":"Merops apiaster","img":"thumbs/330px-Guepier_d%27europe_au_parc_national_Ichkeul.jpg","o":null,"od":326},{"id":"Grøn Biæder","da":"Grøn Biæder","en":"Blue-cheeked Bee-eater","latin":"Merops persicus","img":"thumbs/330px-Blue-cheeked_bee-eater_%28Merops_persicus_persicus%29_Namibia.jpg","o":null,"od":327},{"id":"Guldspætte","da":"Guldspætte","en":"Northern Flicker","latin":"Colaptes auratus","img":"thumbs/330px-Northern_Flicker.jpg","o":null,"od":332},{"id":"Tretået Spætte","da":"Tretået Spætte","en":"Eurasian Three-toed Woodpecker","latin":"Picoides tridactylus","img":"thumbs/330px-Three-toed_Woodpecker_-_Finlandia_0005_%283%29.jpg","o":null,"od":333},{"id":"Mellemflagspætte","da":"Mellemflagspætte","en":"Middle Spotted Woodpecker","latin":"Dendrocoptes medius","img":"thumbs/330px-%D0%A1%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9_%D0%BF%D1%91%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D0%B4%D1%8F%D1%82%D0%B5%D0%BB_%28Dendrocoptes_medius%29%2C_%D0%91%D0%B8%D1%82%D1%86%D0%B5%D0%B2%D1%81%D0%BA%D0%B8%D0%B9_%D0%BB%D0%B5%D1%81.jpg","o":null,"od":334},{"id":"Lille Flagspætte","da":"Lille Flagspætte","en":"Lesser Spotted Woodpecker","latin":"Dryobates minor","img":"thumbs/330px-%D0%9C%D0%B0%D0%BB%D1%8B%D0%B9_%D0%BF%D1%91%D1%81%D1%82%D1%80%D1%8B%D0%B9_%D0%B4%D1%8F%D1%82%D0%B5%D0%BB_%D0%BD%D0%B0_%D1%80%D0%B5%D0%BF%D0%B5%D0%B9%D0%BD%D0%B8%D0%BA%D0%B5_%28Dendrocopos_minor%2C_fem%29%2C_%D0%9A%D1%80%D1%8B%D0%BB%D0%B0%D1%82%D1%81%D0%BA%D0%B8%D0%B5_%D1%85%D0%BE%D0%BB%D0%BC%D1%8B.jpg","o":null,"od":336},{"id":"Lille Tårnfalk","da":"Lille Tårnfalk","en":"Lesser Kestrel","latin":"Falco naumanni","img":"thumbs/330px-Lesser_Kestrel_%28Male%29.jpg","o":null,"od":337},{"id":"Amerikansk Tårnfalk","da":"Amerikansk Tårnfalk","en":"American Kestrel","latin":"Falco sparverius","img":"thumbs/330px-AmericanKestrel02.jpg","o":null,"od":339},{"id":"Aftenfalk","da":"Aftenfalk","en":"Red-footed Falcon","latin":"Falco vespertinus","img":"thumbs/330px-Falco_vespertinus_2_%28Martin_Mecnarowski%29.jpg","o":null,"od":340},{"id":"Eleonorafalk","da":"Eleonorafalk","en":"Eleonora's Falcon","latin":"Falco eleonorae","img":"thumbs/330px-Eleonora%27s_falcon_%28Falco_eleonorae%29_in_flight_3.jpg","o":null,"od":342},{"id":"Lannerfalk","da":"Lannerfalk","en":"Lanner Falcon","latin":"Falco biarmicus","img":"thumbs/330px-Lanner_Falcon_800.jpg","o":null,"od":345,"esc":1},{"id":"Nymfeparakit","da":"Nymfeparakit","en":"Cockatiel","latin":"Nymphicus hollandicus","img":"thumbs/330px-Cockatielmale.jpg","o":null,"od":348,"esc":1},{"id":"Munkeparakit","da":"Munkeparakit","en":"Monk Parakeet","latin":"Myiopsitta monachus","img":"thumbs/330px-Monk_Parakeet_%28Myiopsitta_monachus%29_%2828420470712%29.jpg","o":null,"od":349,"esc":1},{"id":"Soldaterara","da":"Soldaterara","en":"Military Macaw","latin":"Ara militaris","img":"thumbs/330px-Ara_militaris_-Wildlife_World_Zoo_-Arizona-8a.jpg","o":null,"od":350,"esc":1},{"id":"Stor Alexanderparakit","da":"Stor Alexanderparakit","en":"Alexandrine Parakeet","latin":"Psittacula eupatria","img":"thumbs/330px-Alexandrine_parakeet_%28Psittacula_eupatria_eupatria%29_male.jpg","o":null,"od":351,"esc":1},{"id":"Alexanderparakit","da":"Alexanderparakit","en":"Rose-ringed Parakeet","latin":"Psittacula krameri","img":"thumbs/330px-Rose-ringed_parakeet_%28Psittacula_krameri_borealis%29_male_Jaipur_2.jpg","o":null,"od":352,"esc":1},{"id":"Undulat","da":"Undulat","en":"Budgerigar","latin":"Melopsittacus undulatus","img":"thumbs/330px-Budgerigar-male-strzelecki-qld.jpg","o":null,"od":353,"esc":1},{"id":"Rødøjet Vireo","da":"Rødøjet Vireo","en":"Red-eyed Vireo","latin":"Vireo olivaceus","img":"thumbs/330px-Vireo_olivaceus_-Madison_-Wisconsin_-USA-8.jpg","o":null,"od":354},{"id":"Pirol","da":"Pirol","en":"Eurasian Golden Oriole","latin":"Oriolus oriolus","img":"thumbs/330px-Loriot_d%27Europe_by_Michel_Idre.jpg","o":null,"od":355},{"id":"Rosenbrystet Tornskade","da":"Rosenbrystet Tornskade","en":"Lesser Grey Shrike","latin":"Lanius minor","img":"thumbs/330px-Lesser_Grey_Shrike_by_Daniel_Bastaja.jpg","o":null,"od":357},{"id":"Rødhovedet Tornskade","da":"Rødhovedet Tornskade","en":"Woodchat Shrike","latin":"Lanius senator","img":"thumbs/330px-Woodchat_shrike_%28Lanius_senator_senator%29.jpg","o":null,"od":358},{"id":"Turkestantornskade","da":"Turkestantornskade","en":"Red-tailed Shrike","latin":"Lanius phoenicuroides","img":"thumbs/330px-0T4A6719.jpg","o":null,"od":360},{"id":"Langhalet Tornskade","da":"Langhalet Tornskade","en":"Long-tailed Shrike","latin":"Lanius schach","img":"thumbs/330px-Long-tailed_Shrilke_0A2A3080.jpg","o":null,"od":361},{"id":"Brun Tornskade","da":"Brun Tornskade","en":"Brown Shrike","latin":"Lanius cristatus","img":"thumbs/330px-Lanius_cristatus_-_Surin.jpg","o":null,"od":362},{"id":"Iberisk Blåskade","da":"Iberisk Blåskade","en":"Iberian Magpie","latin":"Cyanopica cooki","img":"thumbs/330px-Iberian_magpie_%28Cyanopica_cooki%29%2C_Parque_natural_de_la_Sierra_de_And%C3%BAjar%2C_Espa%C3%B1a_%2832602677484%29.jpg","o":null,"od":363,"esc":1},{"id":"Nøddekrige","da":"Nøddekrige","en":"Spotted Nutcracker","latin":"Nucifraga caryocatactes","img":"thumbs/330px-Orzech%C3%B3wka_zwyczajna_nad_Morskim_Okiem.jpg","o":null,"od":366},{"id":"Sibirisk Allike","da":"Sibirisk Allike","en":"Daurian Jackdaw","latin":"Coloeus dauuricus","img":"thumbs/330px-Dwlhany.jpg","o":null,"od":367},{"id":"Broget Krage","da":"Broget Krage","en":"Pied Crow","latin":"Corvus albus","img":"thumbs/330px-Corvus_albus_-Etosha_National_Park%2C_Namibia-8.jpg","o":null,"od":370,"esc":1},{"id":"Fyrremejse","da":"Fyrremejse","en":"Willow Tit","latin":"Poecile montanus","img":"thumbs/330px-Poecile_montanus_kleinschmidti.jpg","o":null,"od":379},{"id":"Toplærke","da":"Toplærke","en":"Crested Lark","latin":"Galerida cristata","img":"thumbs/330px-Crested_Lark_%28Galerida_cristata%29_at_Sultanpur_I_Picture_118.jpg","o":null,"od":383},{"id":"Bjerglærke","da":"Bjerglærke","en":"Horned Lark","latin":"Eremophila alpestris","img":"thumbs/330px-Shore_Lark.jpg","o":null,"od":384},{"id":"Korttået Lærke","da":"Korttået Lærke","en":"Greater Short-toed Lark","latin":"Calandrella brachydactyla","img":"thumbs/330px-Greater_short-toed_lark_%28Calandrella_brachydactyla%29_Photograph_by_Shantanu_Kuveskar.jpg","o":null,"od":385},{"id":"Østlig Kalanderlærke","da":"Østlig Kalanderlærke","en":"Bimaculated Lark","latin":"Melanocorypha bimaculata","img":"thumbs/330px-Bimaculated_Lark_%28Melanocorypha_bimaculata%29.jpg","o":null,"od":386},{"id":"Cistussanger","da":"Cistussanger","en":"Zitting Cisticola","latin":"Cisticola juncidis","img":"thumbs/330px-Zitting_Cisticola_-_Cisticola_juncidis.JPG","o":null,"od":387},{"id":"Spottesanger","da":"Spottesanger","en":"Melodious Warbler","latin":"Hippolais polyglotta","img":"thumbs/330px-Hippolais_polyglotta.jpg","o":null,"od":389},{"id":"Lille Gulbug","da":"Lille Gulbug","en":"Booted Warbler","latin":"Iduna caligata","img":"thumbs/330px-Booted_Warbler_-_Kazakistan_S4E0786_%2817330623545%29.jpg","o":null,"od":390},{"id":"Bleg Gulbug","da":"Bleg Gulbug","en":"Eastern Olivaceous Warbler","latin":"Iduna pallida","img":"thumbs/330px-Eastern_olivaceous_warbler_%28Iduna_pallida%29_by_Lior_Kislev.jpg","o":null,"od":391},{"id":"Vandsanger","da":"Vandsanger","en":"Aquatic Warbler","latin":"Acrocephalus paludicola","img":"thumbs/330px-Seggenrohrsaenger_hand.jpg","o":null,"od":393},{"id":"Lille Rørsanger","da":"Lille Rørsanger","en":"Paddyfield Warbler","latin":"Acrocephalus agricola","img":"thumbs/330px-Paddyfield_Warbler_%28Acrocephalus_agricola%29_in_Kolkata_Im_IMG_0496.jpg","o":null,"od":394},{"id":"Buskrørsanger","da":"Buskrørsanger","en":"Blyth's Reed Warbler","latin":"Acrocephalus dumetorum","img":"thumbs/330px-Blyth%27s_Reed_Warbler_I2_IMG_9417.jpg","o":null,"od":395},{"id":"Stor Græshoppesanger","da":"Stor Græshoppesanger","en":"Gray's Grasshopper Warbler","latin":"Helopsaltes fasciolatus","img":"thumbs/330px-LocustellaFasciolataKeulemans.jpg","o":null,"od":399},{"id":"Stribet Græshoppesanger","da":"Stribet Græshoppesanger","en":"Lanceolated Warbler","latin":"Locustella lanceolata","img":"thumbs/330px-Locustella_lanceolata_71284996.jpg","o":null,"od":400},{"id":"Flodsanger","da":"Flodsanger","en":"River Warbler","latin":"Locustella fluviatilis","img":"thumbs/330px-Flodsangare.jpg","o":null,"od":401},{"id":"Savisanger","da":"Savisanger","en":"Savi's Warbler","latin":"Locustella luscinioides","img":"thumbs/330px-Locustellaluscinioides.jpg","o":null,"od":402},{"id":"Klippesvale","da":"Klippesvale","en":"Eurasian Crag Martin","latin":"Ptyonoprogne rupestris","img":"thumbs/330px-Eurasian_Crag-Martin_-_Estremadurai_1779_%2816772419967%29.jpg","o":null,"od":405},{"id":"Rødbrystet Svale","da":"Rødbrystet Svale","en":"Red-breasted Swallow","latin":"Cecropis semirufa","img":"thumbs/330px-Red-breasted_Swallow_%28Hirundo_semirufa%29_%2830987147586%29.jpg","o":null,"od":408},{"id":"Amursvale","da":"Amursvale","en":"Red-rumped Swallow","latin":"Cecropis daurica","img":"thumbs/330px-Red-rumped_Swallow_%28Cecropis_daurica%29_Photograph_by_Shantanu_Kuveskar.jpg","o":null,"od":410},{"id":"Cettisanger","da":"Cettisanger","en":"Cetti's Warbler","latin":"Cettia cetti","img":"thumbs/330px-37-090505-cettis-warbler-at-Kalloni-east-river.jpg","o":null,"od":412},{"id":"Bjergløvsanger","da":"Bjergløvsanger","en":"Western Bonelli's Warbler","latin":"Phylloscopus bonelli","img":"thumbs/330px-Phylloscopus_bonelli_in_the_wild.jpg","o":null,"od":414},{"id":"Hvidbrynet Løvsanger","da":"Hvidbrynet Løvsanger","en":"Yellow-browed Warbler","latin":"Phylloscopus inornatus","img":"thumbs/330px-Phylloscopus_inornatus_Meet_Again_368583749_crop.png","o":null,"od":415},{"id":"Himalayasanger","da":"Himalayasanger","en":"Hume's Leaf Warbler","latin":"Phylloscopus humei","img":"thumbs/330px-Hume%27s_Warbler_I2_IMG_3401.jpg","o":null,"od":416},{"id":"Fuglekongesanger","da":"Fuglekongesanger","en":"Pallas's Leaf Warbler","latin":"Phylloscopus proregulus","img":"thumbs/330px-20070304%E8%B4%B5%E9%98%B3-%E9%BB%84%E8%85%B0%E6%9F%B3%E8%8E%BA.jpg","o":null,"od":417},{"id":"Schwarz Løvsanger","da":"Schwarz Løvsanger","en":"Radde's Warbler","latin":"Phylloscopus schwarzi","img":"thumbs/330px-Radde%27s_Warbler_-_Thailand_S4E1407_%2818645038584%29_%282%29.jpg","o":null,"od":418},{"id":"Sinkiangløvsanger","da":"Sinkiangløvsanger","en":"Sulphur-bellied warbler","latin":"Phylloscopus griseolus","img":"thumbs/330px-Sulpher-bellied_Warbler_%28Phylloscopus_griseolus%29at_Sindhrot_near_Vadodara%2C_Gujrat_Pix_175.jpg","o":null,"od":419},{"id":"Brun Løvsanger","da":"Brun Løvsanger","en":"Dusky Warbler","latin":"Phylloscopus fuscatus","img":"thumbs/330px-Dusky_Warbler.jpg","o":null,"od":420},{"id":"Iberisk Gransanger","da":"Iberisk Gransanger","en":"Iberian Chiffchaff","latin":"Phylloscopus ibericus","img":"thumbs/330px-Phylloscopus_ibericus.jpg","o":null,"od":422},{"id":"Grøn Sanger","da":"Grøn Sanger","en":"Green Warbler","latin":"Phylloscopus nitidus","img":"thumbs/330px-Green_warbler.jpg","o":null,"od":424},{"id":"Østlig Lundsanger","da":"Østlig Lundsanger","en":"Two-barred Warbler","latin":"Phylloscopus plumbeitarsus","img":"thumbs/330px-Two-barred_Warbler.jpg","o":null,"od":425},{"id":"Lundsanger","da":"Lundsanger","en":"Greenish Warbler","latin":"Phylloscopus trochiloides","img":"thumbs/330px-Greenish_Warbler_Sikkim_India_11.05.2014.jpg","o":null,"od":426},{"id":"Nordsanger","da":"Nordsanger","en":"Arctic Warbler","latin":"Phylloscopus borealis","img":"thumbs/330px-Arctic_Warbler_4683b.jpg","o":null,"od":427},{"id":"Høgesanger","da":"Høgesanger","en":"Barred Warbler","latin":"Curruca nisoria","img":"thumbs/330px-Sylvia_nisoria.jpg","o":null,"od":430},{"id":"Asiatisk Ørkensanger","da":"Asiatisk Ørkensanger","en":"Asian Desert Warbler","latin":"Curruca nana","img":"thumbs/330px-Asian_Desert_Wrabler.jpg","o":null,"od":432},{"id":"Sardinsk Sanger","da":"Sardinsk Sanger","en":"Marmora's Warbler","latin":"Curruca sarda","img":"thumbs/330px-Marmora%27s_Warbler_-_Sardinia_-_Italy_S4E1036.jpg","o":null,"od":434},{"id":"Provencesanger","da":"Provencesanger","en":"Dartford Warbler","latin":"Curruca undata","img":"thumbs/330px-Fauvette_pitchou_Ichkeul_NP.jpg","o":null,"od":435},{"id":"Sortstrubet Sanger","da":"Sortstrubet Sanger","en":"Rüppell's Warbler","latin":"Curruca ruppeli","img":"thumbs/330px-Ruppell%27s_warbler.jpg","o":null,"od":436},{"id":"Sorthovedet Sanger","da":"Sorthovedet Sanger","en":"Sardinian Warbler","latin":"Curruca melanocephala","img":"thumbs/330px-Sardinian_Warbler.jpg","o":null,"od":437},{"id":"Makisanger","da":"Makisanger","en":"Moltoni's Warbler","latin":"Curruca subalpina","img":"thumbs/330px-Moltoni%27s_Warbler_-_Castelletto_Merli_-_Italy_%2842866907560%29.jpg","o":null,"od":438},{"id":"Iberisk Sanger","da":"Iberisk Sanger","en":"Western Subalpine Warbler","latin":"Curruca iberiae","img":"thumbs/330px-Subalpine_Warbler_-_Monfrague_-_Spain_2669_%2819110069408%29.jpg","o":null,"od":439},{"id":"Rødstrubet Sanger","da":"Rødstrubet Sanger","en":"Eastern Subalpine Warbler","latin":"Curruca cantillans","img":"thumbs/330px-Sylvia_cantillans.jpg","o":null,"od":440},{"id":"Korttået Træløber","da":"Korttået Træløber","en":"Short-toed Treecreeper","latin":"Certhia brachydactyla","img":"thumbs/330px-Short-toed_treecreeper_%28Certhia_brachydactyla_megarhynchos%29.jpg","o":null,"od":446},{"id":"Gærdesmutte, Nordatlantisk (fridariensis/hirtensis/borealis)","da":"Gærdesmutte, Nordatlantisk (fridariensis/hirtensis/borealis)","en":"Eurasian Wren (ssp. fridariensis/hirtensis/borealis)","latin":"Nannus troglodytes ssp. fridariensis/hirtensis/borealis","img":"thumbs/330px-Ein_neugieriger_Zaunk%C3%B6nig.jpg","o":null,"od":448},{"id":"Ensfarvet Stær","da":"Ensfarvet Stær","en":"Spotless Starling","latin":"Sturnus unicolor","img":"thumbs/330px-Estornino_Negro._Casa_de_Campo._Madrid_%283%29.jpg","o":null,"od":449},{"id":"Rosenstær","da":"Rosenstær","en":"Rosy Starling","latin":"Pastor roseus","img":"thumbs/330px-Rosy_Starling_-_Almaty_-_Kazakstan_S4E1244_%2822382991808%29.jpg","o":null,"od":451},{"id":"Rødvinget Sortstær","da":"Rødvinget Sortstær","en":"Red-winged Starling","latin":"Onychognathus morio","img":"thumbs/330px-Red-winged_starling_%28Onychognathus_morio_morio%29_male_Mount_Sheba.jpg","o":null,"od":452,"esc":1},{"id":"Gulddrossel","da":"Gulddrossel","en":"White's Thrush","latin":"Zoothera aurea","img":"thumbs/330px-Zoothera_dauma_-_Ang_Khang.jpg","o":null,"od":454},{"id":"Olivenskovdrossel","da":"Olivenskovdrossel","en":"Swainson's Thrush","latin":"Catharus ustulatus","img":"thumbs/330px-Catharus_ustulatus_-North_Dakota-8a.jpg","o":null,"od":455},{"id":"Eremitdrossel","da":"Eremitdrossel","en":"Hermit Thrush","latin":"Catharus guttatus","img":"thumbs/330px-Hermit_thrush_qmnonic.jpg","o":null,"od":456},{"id":"Sortstrubet Drossel","da":"Sortstrubet Drossel","en":"Black-throated Thrush","latin":"Turdus atrogularis","img":"thumbs/330px-A_dark-throated_Thrush_female_-_Dhanachuli%2C_Uttarakhand_India.jpg","o":null,"od":463},{"id":"Brundrossel","da":"Brundrossel","en":"Dusky Thrush","latin":"Turdus eunomus","img":"thumbs/330px-Turdus_eunomus_-Japan-8.jpg","o":null,"od":464},{"id":"Gråstrubet Drossel","da":"Gråstrubet Drossel","en":"Eyebrowed Thrush","latin":"Turdus obscurus","img":"thumbs/330px-Eyebrowed_Thrush.jpg","o":null,"od":465},{"id":"Vandredrossel","da":"Vandredrossel","en":"American Robin","latin":"Turdus migratorius","img":"thumbs/330px-Turdus-migratorius-002.jpg","o":null,"od":466},{"id":"Brun Fluesnapper","da":"Brun Fluesnapper","en":"Asian Brown Flycatcher","latin":"Muscicapa dauurica","img":"thumbs/330px-Asian_Brown_Flycatcher_%28Muscicapa_dauurica%29_at_Periyar_National_Park.jpg","o":null,"od":467},{"id":"Sydlig Nattergal","da":"Sydlig Nattergal","en":"Common Nightingale","latin":"Luscinia megarhynchos","img":"thumbs/330px-Luscinia_megarhynchos_-_01.jpg","o":null,"od":471},{"id":"Rubinnattergal","da":"Rubinnattergal","en":"Siberian Rubythroat","latin":"Calliope calliope","img":"thumbs/330px-Luscinia_calliope_-_Pak_Chong_2.jpg","o":null,"od":473},{"id":"Manchurernattergal","da":"Manchurernattergal","en":"Rufous-tailed Robin","latin":"Larvivora sibilans","img":"thumbs/330px-Luscinia_sibilans_-_Khao_Yai.jpg","o":null,"od":474},{"id":"Lille Fluesnapper","da":"Lille Fluesnapper","en":"Red-breasted Flycatcher","latin":"Ficedula parva","img":"thumbs/330px-Red_brested_flycatcher_by_David_Raju_%28cropped%29.jpg","o":null,"od":475},{"id":"Tajgafluesnapper","da":"Tajgafluesnapper","en":"Taiga Flycatcher","latin":"Ficedula albicilla","img":"thumbs/330px-Taiga_Flycatcher.jpg","o":null,"od":476},{"id":"Hvidhalset Fluesnapper","da":"Hvidhalset Fluesnapper","en":"Collared Flycatcher","latin":"Ficedula albicollis","img":"thumbs/330px-Collared_flycatcher_%28Ficedula_albicollis%29.jpg","o":null,"od":477},{"id":"Blåstjert","da":"Blåstjert","en":"Red-flanked Bluetail","latin":"Tarsiger cyanurus","img":"thumbs/330px-Tarsiger_cyanurus.jpg","o":null,"od":479},{"id":"Stendrossel","da":"Stendrossel","en":"Common Rock Thrush","latin":"Monticola saxatilis","img":"thumbs/330px-Monsax.jpg","o":null,"od":482},{"id":"Sibirisk Bynkefugl","da":"Sibirisk Bynkefugl","en":"Siberian Stonechat","latin":"Saxicola maurus","img":"thumbs/330px-Siberian_stonechat_Male.jpg","o":null,"od":484},{"id":"Ørkenstenpikker","da":"Ørkenstenpikker","en":"Desert Wheatear","latin":"Oenanthe deserti","img":"thumbs/330px-Desert_Wheatear_%28Oenanthe_deserti%29_Photograph_by_Shantanu_Kuveskar.jpg","o":null,"od":486},{"id":"Vestlig Middelhavsstenpikker","da":"Vestlig Middelhavsstenpikker","en":"Western Black-eared Wheatear","latin":"Oenanthe hispanica","img":"thumbs/330px-CollalbaRubia.jpg","o":null,"od":487},{"id":"Nonnestenpikker","da":"Nonnestenpikker","en":"Pied Wheatear","latin":"Oenanthe pleschanka","img":"thumbs/330px-Pied_Wheatear_%28Oenanthe_pleschanka%29_%288079431820%29.jpg","o":null,"od":488},{"id":"Østlig Middelhavsstenpikker","da":"Østlig Middelhavsstenpikker","en":"Eastern Black-eared Wheatear","latin":"Oenanthe melanoleuca","img":"thumbs/330px-45-090506-black-eared-wheatear-at-Ipsilou-Monastery-.jpg","o":null,"od":489},{"id":"Isabellastenpikker","da":"Isabellastenpikker","en":"Isabelline Wheatear","latin":"Oenanthe isabellina","img":"thumbs/330px-Isabelline_wheatear_%28Oenanthe_isabellina%29_male%2C_non-breeding.jpg","o":null,"od":491},{"id":"Hvidkronet Stenpikker","da":"Hvidkronet Stenpikker","en":"White-crowned Wheatear","latin":"Oenanthe leucopyga","img":"thumbs/330px-Oenanthe_leucopyga.jpg","o":null,"od":492},{"id":"Alpejernspurv","da":"Alpejernspurv","en":"Alpine Accentor","latin":"Prunella collaris","img":"thumbs/330px-Alpine_accentor_saganta.jpg","o":null,"od":493},{"id":"Sortstrubet Jernspurv","da":"Sortstrubet Jernspurv","en":"Black-throated Accentor","latin":"Prunella atrogularis","img":"thumbs/330px-Black-throated_Accentor_-_Kazakistan_S4E3967_%2817037004490%29.jpg","o":null,"od":494},{"id":"Sibirisk Jernspurv","da":"Sibirisk Jernspurv","en":"Siberian Accentor","latin":"Prunella montanella","img":"thumbs/330px-Siberian_Accentor_%28Prunella_montanella%29_-_%D0%A1%D0%B8%D0%B1%D0%B8%D1%80%D0%B8%D0%B9%D0%BD_%D1%85%D0%B0%D0%B9%D1%80%D1%83%D1%83%D0%BB%D0%B4%D0%B0%D0%B9_%2816435139700%29.jpg","o":null,"od":496},{"id":"Snefinke","da":"Snefinke","en":"White-winged Snowfinch","latin":"Montifringilla nivalis","img":"thumbs/330px-Snowfinch.jpg","o":null,"od":497},{"id":"Spansk Spurv","da":"Spansk Spurv","en":"Spanish Sparrow","latin":"Passer hispaniolensis","img":"thumbs/330px-Passer_Hispaniolensis_Male.JPG","o":null,"od":499},{"id":"Citronvipstjert","da":"Citronvipstjert","en":"Citrine Wagtail","latin":"Motacilla citreola","img":"thumbs/330px-Citrine_Wagtail_%28Motacilla_citreola%29-_Breeding_Male_of_calcarata_race_at_Bharatpur_I_IMG_5752.jpg","o":null,"od":503},{"id":"Sibirisk Vipstjert","da":"Sibirisk Vipstjert","en":"Eastern Yellow Wagtail","latin":"Motacilla tschutschensis","img":"thumbs/330px-Eastern_Yellow_Wagtail_%28Motacilla_tschutschensis_tschutschensis%29%2C_Kamchatka%2C_Russia_06.jpg","o":null,"od":504},{"id":"Mongolsk Piber","da":"Mongolsk Piber","en":"Blyth's Pipit","latin":"Anthus godlewskii","img":"thumbs/330px-Blyth%27s_Pipit_Pangolakha_Wildlife_Sanctuary_East_Sikkim_05.05.2016.jpg","o":null,"od":506},{"id":"Markpiber","da":"Markpiber","en":"Tawny Pipit","latin":"Anthus campestris","img":"thumbs/330px-AnthusCampestris_cropped.jpg","o":null,"od":507},{"id":"Storpiber","da":"Storpiber","en":"Richard's Pipit","latin":"Anthus richardi","img":"thumbs/330px-Anthus_richardi_-_Laem_Pak_Bia.jpg","o":null,"od":508},{"id":"Tajgapiber","da":"Tajgapiber","en":"Olive-backed Pipit","latin":"Anthus hodgsoni","img":"thumbs/330px-Olive-backed_pipit_%28Anthus_hodgsoni_hodgsoni%29_Phulchowki.jpg","o":null,"od":510},{"id":"Karmindompap","da":"Karmindompap","en":"Common Rosefinch","latin":"Carpodacus erythrinus","img":"thumbs/330px-Common_Rosefinch_Neora_Valley_National_Park_Darjeeling_West_Bengal_India_30.04.2016.jpg","o":null,"od":518},{"id":"Langhalet Rosenfinke","da":"Langhalet Rosenfinke","en":"Siberian Long-tailed Rosefinch","latin":"Carpodacus sibiricus","img":"thumbs/330px-Carpodacus_sibiricus_from_iNaturalist_photo_116301398.jpg","o":null,"od":519,"esc":1},{"id":"Rosenfinke","da":"Rosenfinke","en":"Pallas's Rosefinch","latin":"Carpodacus roseus","img":"thumbs/330px-Carpodacus_roseus.jpg","o":null,"od":520,"esc":1},{"id":"Krognæb","da":"Krognæb","en":"Pine Grosbeak","latin":"Pinicola enucleator","img":"thumbs/330px-Pine_Grosbeak_%28Pinicola_enucleator%29_%2813667564073%29.jpg","o":null,"od":521},{"id":"Ørkendompap","da":"Ørkendompap","en":"Trumpeter Finch","latin":"Bucanetes githagineus","img":"thumbs/330px-Trumpeter_Finch_-_Morocco_07_2921_%2823051137061%29.jpg","o":null,"od":523},{"id":"Ørkenfinke","da":"Ørkenfinke","en":"Desert Finch","latin":"Rhodospiza obsoleta","img":"thumbs/330px-Desert_Finch_-_Uzbekistan_S4E7626-2_%2823039952955%29.jpg","o":null,"od":524,"esc":1},{"id":"Brunirisk","da":"Brunirisk","en":"Grey-capped Greenfinch","latin":"Chloris sinica","img":"thumbs/330px-Oriental_Greenfinch_-_Honshu_-_Japan_S4E2635_%2823026479292%29.jpg","o":null,"od":526,"esc":1},{"id":"Hvidvinget Korsnæb","da":"Hvidvinget Korsnæb","en":"Two-barred Crossbill","latin":"Loxia leucoptera","img":"thumbs/330px-Whitewingedcrossbillmale09.jpg","o":null,"od":530},{"id":"Stor Korsnæb","da":"Stor Korsnæb","en":"Parrot Crossbill","latin":"Loxia pytyopsittacus","img":"thumbs/330px-Loxia_pytyopsittacus%2C_Budby_Common_3.jpg","o":null,"od":531},{"id":"Gulirisk","da":"Gulirisk","en":"European Serin","latin":"Serinus serinus","img":"thumbs/330px-European_serin_%28Serinus_serinus%29_male.jpg","o":null,"od":535},{"id":"Gulbrynet Værling","da":"Gulbrynet Værling","en":"Yellow-browed Bunting","latin":"Schoeniclus chrysophrys","img":"thumbs/330px-Yellow-browed_bunting_%28Emberiza_chrysophrys%29_Eocheong_Island_Korea_2012.jpg","o":null,"od":540},{"id":"Gulbrystet Værling","da":"Gulbrystet Værling","en":"Yellow-breasted Bunting","latin":"Schoeniclus aureolus","img":"thumbs/330px-Yellow-breasted_bunting_in_Nepal_02_-Cropped.jpg","o":null,"od":541},{"id":"Dværgværling","da":"Dværgværling","en":"Little Bunting","latin":"Schoeniclus pusillus","img":"thumbs/330px-Zwergammer.jpg","o":null,"od":542},{"id":"Pileværling","da":"Pileværling","en":"Rustic Bunting","latin":"Schoeniclus rusticus","img":"thumbs/330px-Emberiza_rustica2.jpg","o":null,"od":543},{"id":"Hætteværling","da":"Hætteværling","en":"Black-headed Bunting","latin":"Melophus melanocephalus","img":"thumbs/330px-28-090504-black-headed-bunting-at-first-layby.jpg","o":null,"od":544},{"id":"Brunhovedet Værling","da":"Brunhovedet Værling","en":"Red-headed Bunting","latin":"Melophus bruniceps","img":"thumbs/330px-Red-headed_bunting_%28Emberiza_bruniceps%29_Photograph_by_Shantanu_Kuveskar.jpg","o":null,"od":545},{"id":"Klippeværling","da":"Klippeværling","en":"Rock Bunting","latin":"Emberiza cia","img":"thumbs/330px-Rock_Bunting_%28Cochem%29.jpg","o":null,"od":547},{"id":"Bjerghortulan","da":"Bjerghortulan","en":"Grey-necked Bunting","latin":"Emberiza buchanani","img":"thumbs/330px-Grey-necked_Bunting_%28Emberiza_buchanani%29_%2831793472228%29.jpg","o":null,"od":548},{"id":"Gulgrå Værling","da":"Gulgrå Værling","en":"Cinereous Bunting","latin":"Emberiza cineracea","img":"thumbs/330px-090508-cinereous-bunting-at-Petrified-Forest.jpg","o":null,"od":549},{"id":"Hortulan","da":"Hortulan","en":"Ortolan Bunting","latin":"Emberiza hortulana","img":"thumbs/330px-Ortolan_bunting_in_Sierra_de_Guara%2C_Aragon%2C_Spain.jpg","o":null,"od":550},{"id":"Gærdeværling","da":"Gærdeværling","en":"Cirl Bunting","latin":"Emberiza cirlus","img":"thumbs/330px-Cirl_bunting_cropped.jpg","o":null,"od":551},{"id":"Hvidkindet Værling","da":"Hvidkindet Værling","en":"Pine Bunting","latin":"Emberiza leucocephalos","img":"thumbs/330px-Pine_Bunting_%28Emberiza_leucocephalos%29_-_%D0%A6%D0%B0%D0%B3%D0%B0%D0%B0%D0%BD%D1%88%D0%B0%D0%BD%D0%B0%D0%B0%D1%82_%D1%85%D3%A9%D0%BC%D1%80%D3%A9%D0%B3_%2815617685422%29.jpg","o":null,"od":552},{"id":"Mørkøjet Junco","da":"Mørkøjet Junco","en":"Dark-eyed Junco","latin":"Junco hyemalis","img":"thumbs/330px-Dark-eyed_Junco%2C_Washington_State_02.jpg","o":null,"od":554},{"id":"Hvidstrubet Spurv","da":"Hvidstrubet Spurv","en":"White-throated Sparrow","latin":"Zonotrichia albicollis","img":"thumbs/330px-Zonotrichia_albicollis_CT1.jpg","o":null,"od":555},{"id":"Hvidkronet Spurv","da":"Hvidkronet Spurv","en":"White-crowned Sparrow","latin":"Zonotrichia leucophrys","img":"thumbs/330px-White-crowned-Sparrow.jpg","o":null,"od":556},{"id":"Gul Sanger","da":"Gul Sanger","en":"American Yellow Warbler","latin":"Setophaga aestiva","img":"thumbs/330px-Dendroica-aestiva-001.jpg","o":null,"od":557},{"id":"Sangspurv","da":"Sangspurv","en":"Song Sparrow","latin":"Melospiza melodia","img":"thumbs/330px-Song_sparrow_in_Prospect_Park_%2893031%29.jpg","o":null,"od":558},{"id":"Kragegrackel","da":"Kragegrackel","en":"Great-tailed Grackle","latin":"Quiscalus mexicanus","img":"thumbs/330px-Great-tailed_grackle_%28Quiscalus_mexicanus_mexicanus%29_male_Copan.jpg","o":null,"od":559,"esc":1},{"id":"Stribet Sanger","da":"Stribet Sanger","en":"Blackpoll Warbler","latin":"Setophaga striata","img":"thumbs/330px-Dendroica_striata_MN.jpg","o":null,"od":560},{"id":"Rosenbrystet Kernebider","da":"Rosenbrystet Kernebider","en":"Rose-breasted Grosbeak","latin":"Pheucticus ludovicianus","img":"thumbs/330px-RosebreastedGrosbeak08.jpg","o":null,"od":561},{"id":"Indigofinke","da":"Indigofinke","en":"Indigo Bunting","latin":"Passerina cyanea","img":"thumbs/330px-Indigo_Bunting_by_Dan_Pancamo_4.jpg","o":null,"od":562,"esc":1}];
-const KEY = "ega-birds-seen-v1";
+const KEY = "ega-birds-v2";            // { log: { "YYYY-MM-DD": { id: { c: count, t: ms } } }, custom: [...] }
+const KEY_V1 = "ega-birds-seen-v1";    // old { seen: { id: { count, first, last } } }, kept as a backup
 const SCOPE_KEY = "ega-birds-scope";
 const SCOPES = { ega: "Egå Engsø", dk: "Denmark" };
+const DAY = 864e5;
 let scope = "ega";
 try { if (SCOPES[localStorage.getItem(SCOPE_KEY)]) scope = localStorage.getItem(SCOPE_KEY); } catch (e) {}
-const DAY = 864e5;
+
+// ---------- dates (local time, "YYYY-MM-DD") ----------
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const parseYmd = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const today = () => ymd(new Date());
+const daysBetween = (a, b) => Math.round((parseYmd(b) - parseYmd(a)) / DAY);
+const isYmd = s => /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(parseYmd(s));
+function fmtDay(s, year) {
+  return parseYmd(s).toLocaleDateString(undefined, year ? { day: "numeric", month: "short", year: "numeric" } : { day: "numeric", month: "short" });
+}
+function weekOfYear(s) {
+  const d = parseYmd(s);
+  return Math.min(52, Math.floor(Math.round((d - new Date(d.getFullYear(), 0, 1)) / DAY) / 7));
+}
 
 // ---------- storage ----------
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
-    if (s && typeof s === "object") return { seen: s.seen || {}, custom: s.custom || [] };
+    if (s && s.log) return { log: s.log, custom: s.custom || [] };
   } catch (e) {}
-  return { seen: {}, custom: [] };
+  // one-time upgrade from the old one-record-per-bird format
+  try {
+    const o = JSON.parse(localStorage.getItem(KEY_V1));
+    if (o && o.seen) {
+      const log = {};
+      for (const [id, s] of Object.entries(o.seen)) {
+        const f = ymd(new Date(s.first)), l = ymd(new Date(s.last));
+        (log[f] = log[f] || {})[id] = { c: s.count || 1, t: s.first };
+        if (l !== f) (log[l] = log[l] || {})[id] = { c: s.count || 1, t: s.last };
+      }
+      return { log, custom: o.custom || [] };
+    }
+  } catch (e) {}
+  return { log: {}, custom: [] };
 }
 let state = load();
 function save() {
   try { localStorage.setItem(KEY, JSON.stringify(state)); }
   catch (e) { toast("Could not save on this device"); }
+}
+function logGet(date, id) { return (state.log[date] || {})[id]; }
+function logSet(date, id, c) { (state.log[date] = state.log[date] || {})[id] = { c, t: Date.now() }; }
+function logDel(date, id) {
+  if (!state.log[date]) return;
+  delete state.log[date][id];
+  if (!Object.keys(state.log[date]).length) delete state.log[date];
+}
+
+// per bird: first/last day, days seen, total counted, time of the latest entry
+let SEEN = {};
+function computeSeen() {
+  SEEN = {};
+  for (const [date, day] of Object.entries(state.log)) {
+    for (const [id, e] of Object.entries(day)) {
+      const s = SEEN[id] || (SEEN[id] = { first: date, last: date, lastT: 0, days: 0, total: 0 });
+      s.days++; s.total += e.c;
+      if (date < s.first) s.first = date;
+      if (date > s.last) { s.last = date; s.lastT = e.t; }
+      else if (date === s.last) s.lastT = Math.max(s.lastT, e.t);
+    }
+  }
 }
 
 // ---------- data ----------
@@ -362,49 +544,52 @@ function ago(t) {
   const m = Math.round((Date.now() - t) / 6e4);
   if (m < 1) return "just now";
   if (m < 60) return m + " min ago";
-  const h = Math.round(m / 60);
-  if (h < 24) return h + " h ago";
-  const d = Math.round(h / 24);
-  return d === 1 ? "yesterday" : d + " days ago";
+  return Math.round(m / 60) + " h ago";
 }
-function fmt(t) {
-  return new Date(t).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+function agoDay(s) {
+  const d = daysBetween(s.last, today());
+  return d <= 0 ? (s.lastT ? ago(s.lastT) : "today") : d === 1 ? "yesterday" : d + " days ago";
 }
 function recency(s) {
   if (!s) return "";
-  const age = Date.now() - s.last;
-  return age < DAY ? "today" : age < 7 * DAY ? "week" : "";
+  const d = daysBetween(s.last, today());
+  return d <= 0 ? "today" : d < 7 ? "week" : "";
 }
 function title(b) { return b.en || b.da; }
 function subtitle(b) { return [b.en ? b.da : "", b.latin].filter(Boolean).join(" · "); }
+const plural = (n, w) => n + " " + w + (n === 1 || w === "species" ? "" : "s");
 
 // ---------- render ----------
-let filter = "all";
+let filter = "all", view = "birds";
 
 function render() {
+  computeSeen();
   const birds = allBirds();
-  const q = $("#q").value.trim().toLowerCase();
-  const sort = $("#sort").value;
-  const seenCount = birds.filter(b => state.seen[b.id]).length;
-
+  const seenCount = birds.filter(b => SEEN[b.id]).length;
   $("#seenN").textContent = seenCount;
   $("#totalN").textContent = birds.length;
   $("#bar").style.width = (birds.length ? seenCount / birds.length * 100 : 0) + "%";
+  if (view === "cal") renderCal(birds); else renderBirds(birds);
+}
+
+function renderBirds(birds) {
+  const q = $("#q").value.trim().toLowerCase();
+  const sort = $("#sort").value;
 
   // recently seen strip (last 7 days, newest first)
-  const recent = birds.filter(b => recency(state.seen[b.id]))
-    .sort((a, b) => state.seen[b.id].last - state.seen[a.id].last);
+  const recent = birds.filter(b => recency(SEEN[b.id]))
+    .sort((a, b) => SEEN[b.id].last.localeCompare(SEEN[a.id].last) || SEEN[b.id].lastT - SEEN[a.id].lastT);
   const strip = $("#recent");
   strip.replaceChildren();
   for (const b of recent.slice(0, 20)) strip.append(card(b));
   $("#recentWrap").hidden = !recent.length || filter !== "all" || !!q;
 
-  // grid
   let list = birds.filter(b => {
-    const s = state.seen[b.id];
+    const s = SEEN[b.id];
     if (filter === "seen" && !s) return false;
     if (filter === "unseen" && s) return false;
     if (filter === "recent" && !recency(s)) return false;
+    if (filter === "today" && recency(s) !== "today") return false;
     if (q && ![b.en, b.da, b.latin].some(x => x && x.toLowerCase().includes(q))) return false;
     return true;
   });
@@ -413,7 +598,10 @@ function render() {
     // birds without a name in that language go last
     list.sort((a, b) => (!a[sort]) - (!b[sort]) || coll.compare(a[sort] || "", b[sort] || "") || a.order - b.order);
   }
-  else if (sort === "recent") list.sort((a, b) => ((state.seen[b.id] || {}).last || 0) - ((state.seen[a.id] || {}).last || 0) || a.order - b.order);
+  else if (sort === "recent") list.sort((a, b) => {
+    const x = SEEN[a.id], y = SEEN[b.id];
+    return (y ? y.last + y.lastT : "").localeCompare(x ? x.last + x.lastT : "") || a.order - b.order;
+  });
   else list.sort((a, b) => a.order - b.order);
 
   const grid = $("#grid");
@@ -426,7 +614,7 @@ function render() {
 }
 
 function card(b) {
-  const s = state.seen[b.id];
+  const s = SEEN[b.id], t = today(), todays = logGet(t, b.id);
   const c = el("button", "card" + (s ? " seen " + recency(s) : "") + (b.custom ? " custom" : "") + (b.esc ? " esc" : ""));
   c.dataset.id = b.id;
   c.append(pic(b));
@@ -434,8 +622,9 @@ function card(b) {
   n.append(el("b", "", title(b)));
   if (b.en) n.append(el("span", "da", b.da));
   if (b.latin) n.append(el("i", "la", b.latin));
-  c.append(n, el("span", "badge", s ? "×" + s.count : ""), el("span", "when", s ? ago(s.last) : ""));
-  c.setAttribute("aria-label", title(b) + (s ? ", seen " + s.count : ", not seen"));
+  const badge = todays ? "×" + todays.c : s ? plural(s.days, "day") : "";
+  c.append(n, el("span", "badge", badge), el("span", "when", s ? agoDay(s) : ""));
+  c.setAttribute("aria-label", title(b) + (todays ? ", seen today: " + todays.c : s ? ", seen on " + plural(s.days, "day") : ", not seen"));
   return c;
 }
 
@@ -446,58 +635,192 @@ function sizeRecent() {
     $("#recent").style.setProperty("--cardw", first.offsetWidth + "px");
 }
 
-// ---------- actions ----------
-$("#recent").addEventListener("click", e => {
-  const c = e.target.closest(".card");
-  if (c) openBird(c.dataset.id);
-});
-$("#grid").addEventListener("click", e => {
+// ---------- calendar ----------
+let calMonth = (() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+let calSel = today();
+
+function renderCal(birds) {
+  const inScope = new Map(birds.map(b => [b.id, b]));
+  const dayEntries = date => Object.entries(state.log[date] || {}).filter(([id]) => inScope.has(id));
+  const t = today();
+
+  // month grid, shaded by number of species logged that day
+  $("#mTitle").textContent = calMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+  const month = $("#month");
+  month.replaceChildren();
+  for (let i = 0; i < 7; i++) month.append(el("div", "wd", new Date(2024, 0, 1 + i).toLocaleDateString(undefined, { weekday: "short" })));
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  const nDays = new Date(y, m + 1, 0).getDate();
+  const counts = [];
+  for (let d = 1; d <= nDays; d++) counts.push(dayEntries(ymd(new Date(y, m, d))).length);
+  const max = Math.max(1, ...counts);
+  for (let i = 0; i < (calMonth.getDay() + 6) % 7; i++) month.append(el("div"));
+  for (let d = 1; d <= nDays; d++) {
+    const ds = ymd(new Date(y, m, d)), n = counts[d - 1];
+    const cell = el("button", "day" + (ds === t ? " today" : "") + (ds === calSel ? " sel" : ""));
+    cell.append(el("span", "", d), el("small", "", n ? n : ""));
+    if (n) {
+      const pct = Math.round(18 + 72 * n / max);
+      cell.style.background = "color-mix(in srgb, var(--accent) " + pct + "%, var(--surface))";
+      if (pct > 55) cell.classList.add("dark");
+    }
+    cell.disabled = ds > t;
+    cell.setAttribute("aria-label", fmtDay(ds, true) + ": " + plural(n, "species"));
+    cell.onclick = () => { calSel = ds; render(); };
+    month.append(cell);
+  }
+
+  // selected day
+  const entries = dayEntries(calSel).map(([id, e]) => [inScope.get(id), e]).sort((a, b) => a[0].order - b[0].order);
+  $("#dayTitle").textContent = parseYmd(calSel).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  $("#dayStats").textContent = entries.length
+    ? plural(entries.length, "species") + " · " + entries.reduce((a, [, e]) => a + e.c, 0) + " birds counted"
+    : "Nothing logged this day. Open a bird and pick this day to log it.";
+  const list = $("#dayList");
+  list.replaceChildren();
+  for (const [b, e] of entries) {
+    const r = el("button", "drow");
+    const nm = el("div");
+    nm.append(el("b", "", title(b)), el("small", "", subtitle(b)));
+    r.append(pic(b), nm, el("span", "n", "×" + e.c));
+    r.onclick = () => openBird(b.id, calSel);
+    list.append(r);
+  }
+
+  // migration table for a year
+  const years = [...new Set(Object.keys(state.log).map(d => d.slice(0, 4)).concat(t.slice(0, 4)))].sort().reverse();
+  const ySel = $("#mYear");
+  const year = years.includes(ySel.value) ? ySel.value : t.slice(0, 4);
+  ySel.replaceChildren(...years.map(v => { const o = el("option", "", v); o.value = v; return o; }));
+  ySel.value = year;
+  const stats = {}, prevFirst = {};
+  for (const [date, day] of Object.entries(state.log)) {
+    const yr = date.slice(0, 4);
+    for (const [id, e] of Object.entries(day)) {
+      if (!inScope.has(id)) continue;
+      if (yr === year) {
+        const s = stats[id] || (stats[id] = { first: date, last: date, days: 0, total: 0, weeks: new Set() });
+        s.days++; s.total += e.c; s.weeks.add(weekOfYear(date));
+        if (date < s.first) s.first = date;
+        if (date > s.last) s.last = date;
+      } else if (+yr === +year - 1 && (!prevFirst[id] || date < prevFirst[id])) prevFirst[id] = date;
+    }
+  }
+  const ids = Object.keys(stats);
+  const sort = $("#mSort").value;
+  const coll = new Intl.Collator(undefined, { sensitivity: "base" });
+  ids.sort((a, b) => {
+    const x = stats[a], z = stats[b], A = inScope.get(a), B = inScope.get(b);
+    if (sort === "last") return z.last.localeCompare(x.last) || A.order - B.order;
+    if (sort === "days") return z.days - x.days || A.order - B.order;
+    if (sort === "tax") return A.order - B.order;
+    if (sort === "name") return coll.compare(title(A), title(B));
+    return x.first.localeCompare(z.first) || A.order - B.order;
+  });
+  const dayCount = Object.keys(state.log).filter(d => d.startsWith(year) && dayEntries(d).length).length;
+  $("#yearStats").textContent = ids.length
+    ? year + ": " + plural(ids.length, "species") + " on " + plural(dayCount, "day")
+    : "Nothing logged in " + year + " yet.";
+  const nowWeek = t.startsWith(year) ? weekOfYear(t) : -1;
+  const mlist = $("#mList");
+  mlist.replaceChildren();
+  for (const id of ids) {
+    const b = inScope.get(id), s = stats[id];
+    const r = el("button", "mrow");
+    const nm = el("div");
+    nm.append(el("b", "", title(b)), el("small", "", b.en ? b.da : b.latin || ""));
+    const first = el("span", "c", fmtDay(s.first));
+    if (prevFirst[id]) first.append(el("small", "", "(" + fmtDay(prevFirst[id]) + ")"));
+    const strip = el("div", "strip");
+    for (let w = 0; w < 53; w++) strip.append(el("i", (s.weeks.has(w) ? "on" : "") + (w === nowWeek ? " now" : "")));
+    r.append(nm, first, el("span", "c", fmtDay(s.last)), el("span", "c", s.days), strip);
+    r.setAttribute("aria-label", title(b) + ": first " + fmtDay(s.first, true) + ", last " + fmtDay(s.last, true) + ", " + plural(s.days, "day"));
+    r.onclick = () => openBird(id, s.last);
+    mlist.append(r);
+  }
+}
+$("#mPrev").onclick = () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1); render(); };
+$("#mNext").onclick = () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1); render(); };
+$("#mYear").addEventListener("change", render);
+$("#mSort").addEventListener("change", render);
+
+function setView(v) {
+  view = v;
+  document.body.classList.toggle("cal", v === "cal");
+  document.body.classList.remove("compact");
+  $("#viewBtn").textContent = v === "cal" ? "Birds" : "Calendar";
+  render(); scrollTo(0, 0);
+}
+$("#viewBtn").onclick = () => setView(view === "cal" ? "birds" : "cal");
+
+// ---------- logging ----------
+function tapBird(e) {
   const c = e.target.closest(".card");
   if (!c) return;
-  const id = c.dataset.id;
-  if (state.seen[id]) { openBird(id); return; }
-  const now = Date.now();
-  state.seen[id] = { count: 1, first: now, last: now };
+  const id = c.dataset.id, t = today();
+  if (logGet(t, id)) { openBird(id); return; }
+  logSet(t, id, 1);
   save(); render();
   if (navigator.vibrate) navigator.vibrate(15);
-  toast("Seen: " + title(byId(id)), "Add count", () => openBird(id));
-});
+  toast("Seen today: " + title(byId(id)), "Count", () => openBird(id));
+}
+$("#grid").addEventListener("click", tapBird);
+$("#recent").addEventListener("click", e => { const c = e.target.closest(".card"); if (c) openBird(c.dataset.id); });
 
 let current = null;
-function openBird(id) {
+function openBird(id, date) {
   const b = byId(id); if (!b) return;
   current = id;
-  const s = state.seen[id];
   $("#dImg").replaceChildren(pic(b));
   $("#dEn").textContent = title(b);
   $("#dDa").textContent = subtitle(b);
-  $("#dCount").value = s ? s.count : 1;
-  $("#dMeta").textContent = s
-    ? "First seen " + fmt(s.first) + (s.last !== s.first ? " · last seen " + fmt(s.last) : "")
-    : "Not seen yet.";
-  $("#dSave").textContent = s ? "Save · seen again now" : "Mark as seen";
-  $("#dRemove").hidden = !s;
+  $("#dDate").max = today();
+  $("#dDate").value = date || today();
   $("#dDelete").hidden = !b.custom;
+  fillBird(true);
   $("#birdDlg").showModal();
 }
+function dlgDate() { const v = $("#dDate").value; return isYmd(v) ? v : today(); }
+function fillBird(resetCount) {
+  const id = current, date = dlgDate(), e = logGet(date, id);
+  computeSeen();
+  const s = SEEN[id];
+  if (resetCount) $("#dCount").value = e ? e.c : 1;
+  const when = date === today() ? "today" : "on " + fmtDay(date, true);
+  $("#dMeta").textContent = (e ? "Logged " + when + ": " + e.c + "." : "Not logged " + when + ".")
+    + (s ? " Seen on " + plural(s.days, "day") + ", first " + fmtDay(s.first, true) + "." : "");
+  $("#dSave").textContent = e ? "Save count" : "Log " + (date === today() ? "today" : fmtDay(date));
+  $("#dRemove").hidden = !e;
+  const days = Object.keys(state.log).filter(d => state.log[d][id]).sort().reverse();
+  $("#dHistLabel").hidden = !days.length;
+  const hist = $("#dHist");
+  hist.replaceChildren();
+  for (const d of days.slice(0, 120)) {
+    const chip = el("button", d === date ? "on" : "", fmtDay(d, !d.startsWith(today().slice(0, 4))) + " ×" + state.log[d][id].c);
+    chip.type = "button";
+    chip.onclick = () => { $("#dDate").value = d; fillBird(true); };
+    hist.append(chip);
+  }
+}
+$("#dDate").addEventListener("change", () => fillBird(true));
 function readCount(inp) { return Math.max(1, Math.min(1e6, parseInt(inp.value, 10) || 1)); }
 $("#dMinus").onclick = () => { $("#dCount").value = Math.max(1, readCount($("#dCount")) - 1); };
 $("#dPlus").onclick = () => { $("#dCount").value = readCount($("#dCount")) + 1; };
 $("#dSave").onclick = () => {
-  const now = Date.now(), s = state.seen[current];
-  state.seen[current] = { count: readCount($("#dCount")), first: s ? s.first : now, last: now };
+  logSet(dlgDate(), current, readCount($("#dCount")));
   save(); render(); $("#birdDlg").close();
 };
 $("#dRemove").onclick = () => {
-  const prev = state.seen[current], id = current;
-  delete state.seen[id]; save(); render(); $("#birdDlg").close();
-  toast("Removed " + title(byId(id)), "Undo", () => { state.seen[id] = prev; save(); render(); });
+  const id = current, date = dlgDate(), prev = logGet(date, id);
+  logDel(date, id); save(); render(); $("#birdDlg").close();
+  toast("Removed " + title(byId(id)) + " · " + fmtDay(date), "Undo", () => { (state.log[date] = state.log[date] || {})[id] = prev; save(); render(); });
 };
 $("#dDelete").onclick = () => {
   const b = byId(current);
-  if (!confirm("Delete “" + title(b) + "” from your list?")) return;
+  if (!confirm("Delete “" + title(b) + "” and all its sightings?")) return;
   state.custom = state.custom.filter(c => c.id !== current);
-  delete state.seen[current]; save(); render(); $("#birdDlg").close();
+  for (const d of Object.keys(state.log)) logDel(d, current);
+  save(); render(); $("#birdDlg").close();
 };
 $("#dClose").onclick = () => $("#birdDlg").close();
 
@@ -514,9 +837,9 @@ $("#addForm").addEventListener("submit", e => {
     setTimeout(() => openBird(existing.id), 0);
     return;
   }
-  const now = Date.now(), id = "custom:" + now;
+  const id = "custom:" + Date.now();
   state.custom.push({ id, da: name, en: $("#aOther").value.trim(), latin: $("#aLatin").value.trim(), img: "" });
-  state.seen[id] = { count: readCount($("#aCount")), first: now, last: now };
+  logSet(today(), id, readCount($("#aCount")));
   save(); render();
   toast("Added " + name);
 });
@@ -540,29 +863,38 @@ showScope();
 $("#q").addEventListener("input", render);
 $("#sort").addEventListener("change", render);
 
+// More menu
+$("#moreBtn").onclick = () => $("#moreDlg").showModal();
+$("#moreClose").onclick = () => $("#moreDlg").close();
+
 // reset
-$("#resetBtn").onclick = () => { $("#rCustom").checked = false; $("#resetDlg").showModal(); };
+$("#resetBtn").onclick = () => { $("#moreDlg").close(); $("#rCustom").checked = false; $("#resetDlg").showModal(); };
 $("#rCancel").onclick = () => $("#resetDlg").close();
 $("#rOk").onclick = () => {
-  state = { seen: {}, custom: $("#rCustom").checked ? [] : state.custom };
+  state = { log: {}, custom: $("#rCustom").checked ? [] : state.custom };
   save(); render(); $("#resetDlg").close(); toast("Reset");
 };
 
-// ---------- CSV ----------
+// ---------- CSV export: one row per bird per day ----------
+const CSV_HEAD = ["date", "danish", "english", "latin", "count", "ega_list", "added_by_me"];
+function csvCell(v) { v = v == null ? "" : String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 function csv() {
-  const esc = v => { v = v == null ? "" : String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
-  const iso = t => { const d = new Date(t); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16).replace("T", " "); };
-  const rows = [["danish", "english", "latin", "count", "first_seen", "last_seen", "ega_list", "added_by_me"]];
-  everyBird().filter(b => state.seen[b.id])
-    .sort((a, b) => a.order - b.order)
-    .forEach(b => { const s = state.seen[b.id]; rows.push([b.da, b.en, b.latin, s.count, iso(s.first), iso(s.last), b.o != null ? "yes" : "", b.custom ? "yes" : ""]); });
-  return "﻿" + rows.map(r => r.map(esc).join(",")).join("\r\n") + "\r\n";
+  const birds = new Map(everyBird().map(b => [b.id, b]));
+  const rows = [CSV_HEAD];
+  for (const date of Object.keys(state.log).sort()) {
+    Object.entries(state.log[date])
+      .map(([id, e]) => [birds.get(id) || { id, da: id, en: "", latin: "", order: 1e9 }, e])
+      .sort((a, b) => a[0].order - b[0].order)
+      .forEach(([b, e]) => rows.push([date, b.da, b.en, b.latin, e.c, b.o != null ? "yes" : "", b.custom ? "yes" : ""]));
+  }
+  return "﻿" + rows.map(r => r.map(csvCell).join(",")).join("\r\n") + "\r\n";
 }
-function csvName() { return "ega-birds-" + new Date().toISOString().slice(0, 10) + ".csv"; }
-function nothingSeen() { if (!Object.keys(state.seen).length) { toast("No birds seen yet"); return true; } }
+function csvName() { return "bird-log-" + today() + ".csv"; }
+function nothingLogged() { if (!Object.keys(state.log).length) { toast("Nothing logged yet"); return true; } }
 
 $("#csvBtn").onclick = () => {
-  if (nothingSeen()) return;
+  $("#moreDlg").close();
+  if (nothingLogged()) return;
   const url = URL.createObjectURL(new Blob([csv()], { type: "text/csv;charset=utf-8" }));
   const a = el("a"); a.href = url; a.download = csvName();
   document.body.append(a); a.click(); a.remove();
@@ -573,11 +905,14 @@ $("#csvBtn").onclick = () => {
 if (navigator.share) {
   $("#shareBtn").hidden = false;
   $("#shareBtn").onclick = async () => {
-    if (nothingSeen()) return;
+    $("#moreDlg").close();
+    if (nothingLogged()) return;
+    computeSeen();
     const file = new File([csv()], csvName(), { type: "text/csv" });
-    const seen = allBirds().filter(b => state.seen[b.id]).sort((a, b) => a.order - b.order);
-    const head = SCOPES[scope] + ": " + seen.length + " birds seen";
-    const text = head + "\n" + seen.map(b => "• " + title(b) + " ×" + state.seen[b.id].count).join("\n");
+    const seen = allBirds().filter(b => SEEN[b.id]).sort((a, b) => a.order - b.order);
+    const todays = seen.filter(b => logGet(today(), b.id));
+    const head = SCOPES[scope] + ": " + plural(seen.length, "species") + " seen" + (todays.length ? ", " + todays.length + " today" : "");
+    const text = head + "\n" + (todays.length ? todays : seen).map(b => "• " + title(b) + (logGet(today(), b.id) ? " ×" + logGet(today(), b.id).c : "")).join("\n");
     try {
       if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: SCOPES[scope] + " birds", text: head });
       else await navigator.share({ title: SCOPES[scope] + " birds", text });
@@ -586,6 +921,93 @@ if (navigator.share) {
     }
   };
 }
+
+// ---------- CSV import ----------
+function parseCsv(text) {
+  text = text.replace(/^﻿/, "");
+  const rows = []; let row = [], cell = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) {
+      if (ch === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; }
+      else cell += ch;
+    } else if (ch === '"') q = true;
+    else if (ch === "," || ch === ";") { row.push(cell); cell = ""; }
+    else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && text[i + 1] === "\n") i++;
+      row.push(cell); cell = "";
+      if (row.some(c => c.trim())) rows.push(row);
+      row = [];
+    } else cell += ch;
+  }
+  row.push(cell);
+  if (row.some(c => c.trim())) rows.push(row);
+  return rows;
+}
+// Reads this page's export (date per row) and the older export (first_seen / last_seen per bird).
+function readImport(text) {
+  const rows = parseCsv(text);
+  if (!rows.length) throw new Error("The file is empty.");
+  const h = rows[0].map(x => x.trim().toLowerCase());
+  const col = name => h.indexOf(name);
+  const iDa = col("danish"), iEn = col("english"), iLa = col("latin"), iC = col("count");
+  const iDate = col("date"), iFirst = col("first_seen"), iLast = col("last_seen"), iAdded = col("added_by_me");
+  if (iDa < 0 || (iDate < 0 && iFirst < 0)) throw new Error("This doesn't look like a bird list export (needs “danish” and “date” columns).");
+  const known = new Map();
+  for (const b of everyBird()) {
+    known.set(b.id.toLowerCase(), b.id);
+    if (b.da) known.set(b.da.toLowerCase(), b.id);
+  }
+  const entries = [], newBirds = new Map();
+  let skipped = 0;
+  for (const r of rows.slice(1)) {
+    const da = (r[iDa] || "").trim();
+    const c = Math.max(1, parseInt(iC >= 0 ? r[iC] : "1", 10) || 1);
+    const dates = (iDate >= 0 ? [r[iDate]] : [r[iFirst], r[iLast]]).map(x => (x || "").trim().slice(0, 10)).filter(isYmd);
+    if (!da || !dates.length) { skipped++; continue; }
+    let id = known.get(da.toLowerCase());
+    if (!id) {
+      id = newBirds.has(da.toLowerCase()) ? newBirds.get(da.toLowerCase()).id : "custom:" + Date.now() + "-" + newBirds.size;
+      if (!newBirds.has(da.toLowerCase()))
+        newBirds.set(da.toLowerCase(), { id, da, en: iEn >= 0 ? (r[iEn] || "").trim() : "", latin: iLa >= 0 ? (r[iLa] || "").trim() : "", img: "" });
+    }
+    for (const d of new Set(dates)) entries.push({ date: d, id, c });
+  }
+  if (!entries.length) throw new Error("No sightings found in the file.");
+  return { entries, newBirds: [...newBirds.values()], skipped };
+}
+let pending = null;
+$("#importBtn").onclick = () => { $("#moreDlg").close(); $("#importFile").value = ""; $("#importFile").click(); };
+$("#importFile").addEventListener("change", async () => {
+  const f = $("#importFile").files[0];
+  if (!f) return;
+  try { pending = readImport(await f.text()); }
+  catch (e) { toast(e.message || "Could not read the file"); return; }
+  const days = new Set(pending.entries.map(e => e.date)).size;
+  const species = new Set(pending.entries.map(e => e.id)).size;
+  $("#iSummary").textContent = f.name + ": " + plural(pending.entries.length, "sighting") + " of " + plural(species, "species") + " on " + plural(days, "day")
+    + (pending.newBirds.length ? ", including " + plural(pending.newBirds.length, "bird") + " not on the lists (added as your own)" : "")
+    + (pending.skipped ? ". " + plural(pending.skipped, "row") + " without a name or date will be skipped." : ".");
+  document.querySelector("input[name=imode][value=merge]").checked = true;
+  $("#importDlg").showModal();
+});
+$("#iCancel").onclick = () => { pending = null; $("#importDlg").close(); };
+$("#iOk").onclick = () => {
+  if (!pending) return;
+  const replace = document.querySelector("input[name=imode]:checked").value === "replace";
+  if (replace) state = { log: {}, custom: [] };
+  const haveCustom = new Set(state.custom.map(c => c.da.toLowerCase()));
+  const remap = {};
+  for (const b of pending.newBirds) {
+    const same = state.custom.find(c => c.da.toLowerCase() === b.da.toLowerCase());
+    if (same) remap[b.id] = same.id;
+    else if (!haveCustom.has(b.da.toLowerCase())) state.custom.push(b);
+  }
+  for (const e of pending.entries) logSet(e.date, remap[e.id] || e.id, e.c);
+  save(); render(); $("#importDlg").close();
+  toast("Imported " + plural(pending.entries.length, "sighting"));
+  pending = null;
+};
 
 // ---------- toast ----------
 let toastTimer;
@@ -601,7 +1023,7 @@ function toast(msg, action, fn) {
 
 // close dialogs by tapping the backdrop
 document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
-// keep "x min ago" labels fresh; pick up changes from other tabs
+// keep "x min ago" labels fresh (and roll over at midnight); pick up changes from other tabs
 setInterval(render, 60000);
 window.addEventListener("storage", e => { if (e.key === KEY) { state = load(); render(); } });
 
@@ -620,7 +1042,7 @@ addEventListener("scroll", () => {
   requestAnimationFrame(() => {
     ticking = false;
     const y = scrollY, dy = y - lastY;
-    if (!phone.matches || y < 60) document.body.classList.remove("compact");
+    if (!phone.matches || y < 60 || view === "cal") document.body.classList.remove("compact");
     else if (dy > 6) { if (!document.body.classList.contains("compact")) { setHide(); document.body.classList.add("compact"); } }
     else if (dy < -6) document.body.classList.remove("compact");
     if (Math.abs(dy) > 6 || y < 60) lastY = y;

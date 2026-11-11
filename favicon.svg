@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#1f6f4a"/>
+  <!-- branch -->
+  <path d="M9 51.5 Q32 45.5 57 49.5 Q58.5 51.5 57 53 Q32 49.5 9 55 Q7.5 53.3 9 51.5 Z" fill="#9fd6b8"/>
+  <!-- legs -->
+  <path d="M28 44 L30.2 44 L28.2 50.5 L26 50.5 Z M33 44 L35.2 44 L35.6 50 L33.4 50 Z" fill="#f2b632"/>
+  <!-- tail -->
+  <path d="M19 38 L6 45 L9 48 L22 43 Z" fill="#ffffff"/>
+  <!-- body + head -->
+  <path d="M17 37 C17 27 25 21 35 21 C37 15 42 12 46 13 C51 14 53 19 51 23 C49 28 47 30 47 33 C47 41 40 46 31 46 C23 46 17 43 17 37 Z" fill="#ffffff"/>
+  <!-- wing -->
+  <path d="M22 35 C26 29 34 27 41 30 C38 37 30 41 22 38 Z" fill="#c9ead8"/>
+  <!-- beak -->
+  <path d="M50.5 17 L58 19.5 L50.5 22 Z" fill="#f2b632"/>
+  <!-- eye -->
+  <circle cx="46" cy="18" r="2" fill="#17201b"/>
+</svg>
