@@ -98,7 +98,8 @@ main { padding: 12px 16px 96px; }
 /* Grid */
 #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
 @media (min-width: 900px) { #grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; } }
-@media (max-width: 640px) { #grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* phone: one card per row, picture spans the full width like the other pages */
+@media (max-width: 640px) { #grid { grid-template-columns: minmax(0, 1fr); } }
 .card {
   position: relative; background: var(--surface); border-radius: 14px; overflow: hidden;
   border: 0; padding: 0; text-align: left; box-shadow: var(--shadow);
@@ -669,7 +670,8 @@ function card(b) {
 function sizeRecent() {
   const first = $("#grid").firstElementChild;
   if (first && first.classList && first.classList.contains("card"))
-    $("#recent").style.setProperty("--cardw", first.offsetWidth + "px");
+    // on a phone the grid is one column; keep the strip at half that so it stays a strip
+    $("#recent").style.setProperty("--cardw", (matchMedia("(max-width: 640px)").matches ? (first.offsetWidth - 10) / 2 : first.offsetWidth) + "px");
 }
 
 // ---------- calendar ----------
